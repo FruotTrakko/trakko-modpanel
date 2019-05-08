@@ -8,3 +8,9 @@ node_modules/
 TODO
 *.zip
 ratelimit.png
+
+#recommended by heroku
+/node_modules
+npm-debug.log
+.DS_Store
+/*.env

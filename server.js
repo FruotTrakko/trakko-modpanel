@@ -28,5 +28,5 @@ process.on('SIGTERM', () => {
 function shutDown(){
     server.close(() => {
         console.log('Stopped execution of web server.');
-      });
+    });
 }
