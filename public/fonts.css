@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito|Ubuntu:300');
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.heading {
+    font-family: 'Nunito', sans-serif;
+}

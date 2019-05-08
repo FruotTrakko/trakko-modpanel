@@ -1,0 +1,338 @@
+@import url('../fonts.css');
+
+@keyframes rundown {
+    0% {height: 0em; color:rgba(241, 241, 241, 0);}
+    50% {color:rgba(241, 241, 241, 0);}
+    65% {background-color: whitesmoke;}
+    100% {height: 2.5em; color:rgba(241, 241, 241, 1);}
+}
+
+@keyframes runup {
+    0% {height: 2.5em; color:rgba(241, 241, 241, 1);}
+    50% {color:rgba(241, 241, 241, 0);}
+    100% {height: 0em; color:rgba(241, 241, 241, 0);}
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: rgba(46, 46, 46, 0);
+    border: .15em solid whitesmoke;
+    padding: .3em .3em;
+    border-radius: .25em;
+    color: whitesmoke;
+    font-family: 'Nunito', sans-serif;
+    font-size: 102%;
+    transition-duration: .3s;
+}
+
+button:hover {
+    background-color: rgba(177, 177, 177, 0.3);
+    /* color: rgb(46, 46, 46); */
+    cursor: pointer;
+}
+
+input {
+    background-color: rgba(46, 46, 46, 0);
+    border: .15em solid whitesmoke;
+    padding: .3em .3em;
+    border-radius: .25em;
+    color: whitesmoke;
+    font-family: 'Nunito', sans-serif;
+    transition-duration: .3s;
+}
+
+input::placeholder {
+    color: rgba(245, 245, 245, .7);
+}
+
+/* input:hover::placeholder, input:focus::placeholder{
+    color: rgba(46, 46, 46, .7);
+}
+
+input:hover, input:focus{a
+    background-color: whitesmoke;
+    color: rgb(46, 46, 46);
+} */
+
+:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgb(0, 204, 0);
+}
+
+::selection {
+    color: whitesmoke;
+    background-color: rgb(0, 204, 0);
+}
+
+.red-text {
+    color: rgb(240, 94, 94)
+}
+
+.orange-text {
+    color: rgb(238, 169, 43);
+}
+
+.green-text {
+    color: rgb(84, 195, 48);
+}
+
+.purple-text {
+    color: rgb(173, 97, 224);
+}
+
+.test {
+    margin: .5em;
+    padding: .5em;
+    background-color: rgb(240, 94, 94);
+    width: max-content;
+}
+
+.note-container {
+    position: fixed;
+    text-align: right;
+    right: 0;
+    bottom: 0;
+    margin: .15em;
+    color: whitesmoke;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.border {
+    box-shadow: 0 0 0 1px rgba(80, 80, 80, 0.5);
+}
+
+.title {
+    margin: .25em;
+    text-align: center;
+}
+
+div.deleted span.message-text {
+    text-decoration: line-through solid rgb(255, 255, 255);
+    color: rgba(180, 180, 180, .9);
+}
+
+.run-down {
+    animation: rundown 1s ease-out 0s 1 normal;
+}
+
+.run-up {
+    animation: runup 1s ease-in 0s 1 normal;
+}
+
+body {
+    background-color: rgb(49, 49, 49);
+}
+
+div.notificationbar {
+    width: 100%;
+    height: 2.5em;
+    background-color: rgb(240, 94, 94);
+    color: #f5f5f5;
+}
+
+div.notificationbar * {
+    display: flex;
+    height: 100%; 
+    align-items: center; 
+}
+
+div.notificationbar div.container{
+    width: max-content;
+    margin: auto;
+}
+
+div.notificationbar p.detail {
+    padding: 0 1.5em;
+}
+
+div.notifications {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+div.panel {
+    display: flex;
+}
+
+div.side-container {
+    width: 20%;
+}
+
+div.outer-container {
+    margin: .5em;
+    margin-bottom: 1em;
+    height: max-content;
+    background-color: rgb(46, 46, 46);
+    color: whitesmoke;
+}
+
+div.message-box-container {
+    background-color: rgb(46, 46, 46);
+    width: 75%;
+    min-width: 500px;
+    margin: .5em;
+}
+
+div.message-box {
+    display: flex;
+    flex-direction: column;
+    height: 75vh;
+    margin-bottom: .25em;
+    background-color: rgb(46, 46, 46);
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+span.username {
+    font-weight: bold;
+}
+
+span.message-text {
+    color: whitesmoke;
+}
+
+span.message-username-ping {
+    background-color: whitesmoke;
+    color: rgb(46, 46, 46);
+    padding: .2em 0.15em;
+}
+
+div.message {
+    padding: .3em .5em;
+}
+
+div.message-self{
+    background-color: rgb(60, 0, 0) !important;
+}
+
+div.message:nth-child(even) {
+    background-color: rgb(60, 60, 60);
+}
+
+img.badge {
+    vertical-align: bottom;
+    margin-right: .25em;
+    color: whitesmoke;
+}
+
+p.deleted-text {
+    color: rgb(240, 94, 94);
+    font-weight: bold;
+}
+
+span.timestamp {
+    color: rgb(180, 180, 180);
+    font-size: 85%;
+    float: right;
+    padding: .25em 0 0 .15em;
+    
+}
+
+div.status-container {
+    display: flex;
+    margin: .5em 1em;
+    align-items: center;
+    font-size: 105%;
+}
+
+p.status {
+    margin: 0 .25em 0 auto;
+    text-align: end;
+}
+
+div.status-button-container {
+    display: flex;
+}
+
+button.status-button {
+    margin: .25em auto;
+}
+
+button.blocked {
+    cursor: not-allowed;
+    color: rgb(180, 180, 180);
+    border: .15em solid rgb(180, 180, 180);
+}
+
+div.message-box-buttons {
+    display: flex;
+    width: 100%;
+}
+
+button.clear-messages-button {
+    margin: .25em;
+}
+
+button.send-message-button {
+    margin: .25em;
+}
+
+input.message-input {
+    margin: .25em;
+    flex-grow: 1;
+}
+
+div.channel-container {
+    margin: .5em;
+}
+
+div.channel {
+    display: flex;
+    padding: .25em;
+    font-size: 105%;
+    flex-wrap: wrap;
+}
+
+div.channel:hover {
+    background-color: rgba(60, 60, 60, 0.5);
+    border-radius: .125em;
+}
+
+div.channel.channel-selected {
+    background-color: rgba(100, 100, 100, 0.5);
+    border-radius: .125em;
+}
+
+p.channel-status {
+    margin: 0 .5em 0 auto;
+}
+
+p.channel-leaver {
+    padding: .1em .5em;
+    font-family: 'Nunito', sans-serif;
+    transition-duration: .3s
+}
+
+p.channel-leaver:hover{
+    color: rgb(240, 94, 94);
+    font-size: 125%;
+}
+
+div.channel-controls {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+input.channel-name {
+    width: 90%;
+    float: right;
+    margin: .25em auto;
+}
+
+button.channel-join {
+    float: right;
+    margin: .25em auto;
+}

@@ -1,0 +1,10 @@
+#node specific folder
+node_modules/
+
+#testing enviroment variables
+.env
+
+#files not related to app
+TODO
+*.zip
+ratelimit.png

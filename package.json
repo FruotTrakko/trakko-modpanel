@@ -1,0 +1,21 @@
+{
+  "name": "twitch-modpanel",
+  "version": "1.0.0",
+  "description": "A moderation panel for twitch",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start_local": "node -r dotenv/config server.js"
+  },
+  "author": "FruotTrakko",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "engines": {
+    "node": "10.x"
+  },
+  "devDependencies": {
+    "dotenv": "^8.0.0"
+  }
+}
