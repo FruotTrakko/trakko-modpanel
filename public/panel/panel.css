@@ -87,6 +87,64 @@ input:hover, input:focus{a
     color: rgb(173, 97, 224);
 }
 
+.hoverable {
+    position: relative;
+}
+
+.hoverable:hover::before {
+    content: 'Hallo';
+    color: whitesmoke;
+    background-color: rgb(100, 100, 100);
+    position: absolute;
+    top: -95%;
+    left: 50%;
+    margin-left: -20px;
+    padding: .25em;
+    border-radius: .1em;
+    z-index: 98;
+}
+
+.hoverable:hover::after {
+    content: '';
+    position: absolute;
+    top: calc(-25% + .25em);
+    left: 50%;
+    margin-left: -17px;
+    border-top: 10px solid rgb(100, 100, 100);
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    z-index: 97;
+}
+
+.hoverable-badge {
+    position: relative;
+}
+
+.hoverable-badge:hover::before {
+    content: 'Hallo';
+    color: whitesmoke;
+    background-color: rgb(100, 100, 100);
+    position: absolute;
+    top: -195%;
+    left: 50%;
+    margin-left: -20px;
+    padding: .25em;
+    border-radius: .1em;
+    z-index: 98;
+}
+
+.hoverable-badge:hover::after {
+    content: '';
+    position: absolute;
+    top: calc(-95% + .25em);
+    left: 50%;
+    margin-left: -17px;
+    border-top: 10px solid rgb(100, 100, 100);
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    z-index: 97;
+}
+
 .test {
     margin: .5em;
     padding: .5em;
@@ -160,6 +218,7 @@ div.notifications {
     width: 100%;
     top: 0;
     left: 0;
+    z-index: 99;
 }
 
 div.panel {
@@ -221,10 +280,14 @@ div.message:nth-child(even) {
     background-color: rgb(60, 60, 60);
 }
 
-img.badge {
+img.badge{
     vertical-align: bottom;
     margin-right: .25em;
     color: whitesmoke;
+}
+
+div.badge-wrapper {
+    display: inline;
 }
 
 p.deleted-text {

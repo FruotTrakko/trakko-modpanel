@@ -104,6 +104,9 @@ function constructBadgeContainer(badges, parentElement, channel){
     var globalBadgeObject = JSON.parse(sessionStorage.getItem('global-badges'));
 
     badges.forEach((variant, badge) => {
+        let badgeWrapper = document.createElement('div');
+
+        badgeWrapper.classList.add('badge-wrapper');
 
         let badgeElement = document.createElement('img');
 
@@ -119,10 +122,15 @@ function constructBadgeContainer(badges, parentElement, channel){
         badgeElement.src = badgeVariant.image_url_1x;
         badgeElement.alt = badgeVariant.title
 
+        badgeWrapper.classList.add('hoverable-badge');
+        badgeWrapper.addEventListener('mouseover', onHoverableOver);
+        badgeWrapper.addEventListener('mouseout', onHoverableOut);
+
         //console.log(badgeElement.src);
         //console.log(badgeElement.alt);
 
-        parentElement.appendChild(badgeElement);
+        badgeWrapper.appendChild(badgeElement);
+        parentElement.appendChild(badgeWrapper);
     });
 }
 
@@ -412,4 +420,18 @@ function markDeleted(message){
     let deletedText = message.children.namedItem('deleted-text');
     deletedText.innerText = '<deleted>';
     deletedText.classList.add('deleted-text');
+}
+
+function onHoverableOver(event){
+    //TODO use elements instead of ::before/::after
+    console.log(event);
+    console.log(event.srcElement);
+    console.log(event.srcElement.parentNode);
+    console.log(event.srcElement.parentNode.previousSibling);
+    console.log(event.srcElement.parentNode.previousElementSibling);
+    
+}
+
+function onHoverableOut(event){
+    console.log(event);
 }
