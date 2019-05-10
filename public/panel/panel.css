@@ -197,6 +197,7 @@ div.message-box {
 
 span.username {
     font-weight: bold;
+    cursor: pointer;
 }
 
 span.message-text {
