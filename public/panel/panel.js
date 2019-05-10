@@ -36,6 +36,7 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
     } else {
         usernameParagraph.style.color = senderColor;
     }
+    usernameParagraph.addEventListener('click', onClickUsername);
     usernameParagraph.classList.add('username');
 
     let messageSeperator = document.createElement('span');
@@ -412,4 +413,13 @@ function markDeleted(message){
     let deletedText = message.children.namedItem('deleted-text');
     deletedText.innerText = '<deleted>';
     deletedText.classList.add('deleted-text');
+}
+
+function onClickUsername(event){
+    let user = event.srcElement.innerText;
+    let messageInput = document.querySelector('input.message-input');
+
+    messageInput.value += `@${user} `;
+    messageInput.focus()
+    messageInput.scrollIntoView(false);
 }
