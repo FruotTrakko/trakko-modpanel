@@ -176,6 +176,7 @@ div.outer-container {
     height: max-content;
     background-color: rgb(46, 46, 46);
     color: whitesmoke;
+    border-radius: .15em;
 }
 
 div.message-box-container {
