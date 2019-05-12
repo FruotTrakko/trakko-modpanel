@@ -7,6 +7,7 @@ function onPageLoad(){
         window.chatClient.open(); 
     } else {
         showWarning('Important', 'You have to login with your twitch account to use our service!');
+        // OLD REPLACED WITH UNDERNEATH CODE
         let statusText = document.querySelector('p.status');
         statusText.innerText = 'NOT LOGGED IN';
         statusText.classList.remove('green-text');
@@ -16,6 +17,7 @@ function onPageLoad(){
         statusButton.innerText = 'LOG IN';
         statusButton.classList.remove('blocked');
         statusButton.setAttribute('onclick', 'initAuth();');
+        // OLD ^
 
         widget2.setStatus('Not logged in', 'rgb(240, 94, 94)', 'log in', initAuth);
         widget2.setButtonBlocked(false);
@@ -94,6 +96,7 @@ chatClient.prototype.onOpen = function onOpen(){
         socket.send('NICK ' + this.username);
         showInformation('Connected', 'Successfully connected to a Twitch IRC server! Good luck!');
         
+        // OLD REPLACED WITH UNDERNEATH CODE
         let statusText = document.querySelector('p.status');
         statusText.innerText = 'CONNECTED';
         statusText.classList.remove('red-text');
@@ -103,6 +106,10 @@ chatClient.prototype.onOpen = function onOpen(){
         statusButton.innerText = 'DISCONNECT';
         statusButton.classList.remove('blocked');
         statusButton.setAttribute('onclick', 'window.chatClient.close();');
+        // OLD ^
+
+        widget2.setStatus('connected', 'rgb(84, 195, 48)', 'disconnect', window.chatClient.close, window.chatClient);
+        widget2.setButtonBlocked(false);
     }
 };
 
@@ -154,6 +161,7 @@ chatClient.prototype.onClose = function onClose(){
     console.log('Disconnected from the chat server.');
     showInformation('Disconnected', 'Successfully disconnected from the Twitch IRC servers!');
 
+    // OLD REPLACED WITH UNDERNEATH CODE
     let statusText = document.querySelector('p.status');
     statusText.innerText = 'NOT CONNECTED';
     statusText.classList.remove('red-text');
@@ -163,6 +171,10 @@ chatClient.prototype.onClose = function onClose(){
     statusButton.innerText = 'CONNECT';
     statusButton.classList.remove('blocked');
     statusButton.setAttribute('onclick', 'window.chatClient.open();');
+    // OLD ^
+
+    widget2.setStatus('not connected', 'rgb(238, 169, 43)', 'connect', window.chatClient.open, window.chatClient);
+    widget2.setButtonBlocked(false);
 };
 
 chatClient.prototype.close = function close(){

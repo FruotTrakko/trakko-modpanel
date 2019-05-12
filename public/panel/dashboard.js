@@ -13,12 +13,17 @@ class Dashboard {
         this.parentElement = parentElement;
         this.cols = cols;
         this.columns = [];
+        this.widgets = [];
 
         this.parentElement.classList.add('dashboard-main');
 
         for (let i = 0; i < columnWidths.length; i++) {
-            this.columns[i] = new Column(this.parentElement, columnWidths[i]);
+            this.columns[i] = new Column(this.parentElement, columnWidths[i], this);
         }
+    }
+
+    getColumn(index) {
+        return this.columns[index];
     }
 
     setCols(cols) {
@@ -33,6 +38,14 @@ class Dashboard {
         this.updateDashboard();
     }
 
+    addWidget(widget) {
+        this.widgets.push(widget);
+    }
+
+    removeWidget(widget) {
+        this.widgets.splice(this.widgets.indexOf(widget), 1);
+    }
+
     updateDashboard() {
         //TODO IMPLEMENT METHOD
     }
@@ -40,22 +53,25 @@ class Dashboard {
 
 class Column {
 
-    constructor(parentElement, width) {
+    constructor(parentElement, width, dashboard) {
         this.parentElement = parentElement;
         this.width = width;
+        this.dashboard = dashboard;
 
         let columnDiv = document.createElement('div');
-
         columnDiv.classList.add('dashboard-column');
         columnDiv.style.width = `${this.width}%`;
+        this.column = columnDiv;
 
         this.parentElement.appendChild(columnDiv);
+
+        this.newWidget = new NewWidget(this.column, dashboard);
     }
 }
 
 class Widget {
 
-    constructor(columnElement, title) {
+    constructor(columnElement, title, dashboard) {
         this.columnElement = columnElement;
         this.title = title;
 
@@ -75,7 +91,7 @@ class Widget {
         this.widgetMover = widgetMover;
 
         let widgetMoverIcon = document.createElement('span');
-        widgetMoverIcon.classList.add('widget-mover-icon', 'fas', 'fa-th');
+        widgetMoverIcon.classList.add('widget-icon', 'fas', 'fa-th');
         widgetMover.appendChild(widgetMoverIcon);
 
         widgetHandle.appendChild(widgetTitle);
@@ -89,7 +105,13 @@ class Widget {
 
         widgetDiv.appendChild(widgetContent);
 
-        this.columnElement.appendChild(widgetDiv);
+        this.columnElement.insertBefore(widgetDiv, this.columnElement.querySelector('.widget-new-container'));
+
+        if(dashboard) {
+            dashboard.addWidget(this)
+        } else {
+            window.dashboard.addWidget(this);
+        }
     }
 
     onDragMouseDown(event) {
@@ -104,6 +126,7 @@ class Widget {
 
         document.onmouseup = this.onCloseDragElement.bind(this);
         document.onmousemove = this.onDragElement.bind(this);
+        this.onDragElement(event);
     }
 
     onCloseDragElement() {
@@ -146,4 +169,6 @@ class Widget {
             }
         }
     }
+
+    onMessage(message) {}
 }

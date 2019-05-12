@@ -1,10 +1,10 @@
 document.querySelector('div.notificationbar').classList.add('hidden');
 
 
-let dashboard = new Dashboard(document.querySelector('div.panel'), 2);
-let widget = new Widget(document.querySelector('div.dashboard-column'), 'Test Title');
-let widget2 = new StatusWidget(document.querySelector('div.dashboard-column'));
-let widget3 = new StatusWidget(document.querySelector('div.dashboard-column'));
+window.dashboard = new Dashboard(document.querySelector('div.panel'), 2);
+let widget = new Widget(window.dashboard.getColumn(0).column, 'Test Title');
+let widget2 = new StatusWidget(window.dashboard.getColumn(0).column);
+let widget3 = new StatusWidget(window.dashboard.getColumn(1).column);
 
 onPageLoad();
 

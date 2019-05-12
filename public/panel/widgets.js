@@ -6,6 +6,40 @@ class TempWidget extends Widget {
         this.widget.classList.add('widget-temp');
         this.widget.style.height = `${height}px`;
         this.widgetMover.remove();
+
+        window.dashboard.removeWidget(this);
+    }
+}
+
+/**
+ *  Not fully implemented. Missing adding capability. A modal window should appear with a dropdown of possible widgets.
+ */
+class NewWidget extends Widget {
+
+    constructor(columnElement, dashboard) {
+        super(columnElement, '', dashboard);
+
+        this.widget.querySelector('.widget-handle').remove();
+        this.widget.classList.add('widget-new-container');
+
+        let addIconWrapper = document.createElement('div');
+        addIconWrapper.classList.add('widget-new-icon-wrapper');
+
+        let addIcon = document.createElement('span');
+        addIcon.classList.add('widget-icon', 'fa-stack');
+        
+        let plus = document.createElement('i');
+        plus.classList.add('widget-icon-part', 'fas', 'fa-plus', 'fa-stack-1x')
+        let circle = document.createElement('i');
+        circle.classList.add('widget-icon-part', 'far', 'fa-circle', 'fa-stack-2x')
+    
+        addIcon.appendChild(plus);
+        addIcon.appendChild(circle);
+
+        addIconWrapper.appendChild(addIcon);
+
+        this.contentElement.appendChild(addIconWrapper);
+        this.contentElement.classList.add('widget-new-content');
     }
 }
 
@@ -44,12 +78,16 @@ class StatusWidget extends Widget {
         this.contentElement.appendChild(buttonDiv);
     }
 
-    setStatus(status, color, buttonText, buttonCallback) {
+    setStatus(status, color, buttonText, buttonCallback, bind) {
         this.statusText.innerText = status.toUpperCase();
         this.statusText.style.color = color;
 
         this.statusButton.innerText = buttonText.toUpperCase();
-        this.statusButton.onclick = buttonCallback;
+        if(bind){
+            this.statusButton.onclick = buttonCallback.bind(bind);
+        } else {
+            this.statusButton.onclick = buttonCallback
+        }
     }
 
     setButtonBlocked(value) {
