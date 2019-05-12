@@ -6,12 +6,16 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
         <link rel="shortcut icon" href="../shared/favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link rel="stylesheet" href="panel.css">
+        <link rel="stylesheet" href="dashboard.css">
 
         <script src="panel.js"></script>
         <script src="twitch-connect.js"></script>
         <script src="caching.js"></script>
         <script src="data.js"></script>
+        <script src="dashboard.js"></script>
+        <script src="widgets.js"></script>
 
         <title>Trakko Mod Panel</title>
     </head>
@@ -37,10 +41,11 @@
         <button type="button" onclick="showInformation('Information', 'Alright, everything looks good!')">Test Information</button>
     </div>
 
+    <div class="note-container">
+        <h3 class="heading">ALPHA MOCKUP VERSION - Not representative of final build!</h3>
+    </div>
+
     <div class="panel">
-        <div class="note-container">
-            <h3 class="heading">ALPHA MOCKUP VERSION - Not representative of final build!</h3>
-        </div>
         
         <div class="message-box-container border">
             <div class="message-box border"></div>

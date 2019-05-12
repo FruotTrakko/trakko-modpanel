@@ -16,6 +16,9 @@ function onPageLoad(){
         statusButton.innerText = 'LOG IN';
         statusButton.classList.remove('blocked');
         statusButton.setAttribute('onclick', 'initAuth();');
+
+        widget2.setStatus('Not logged in', 'rgb(240, 94, 94)', 'log in', initAuth);
+        widget2.setButtonBlocked(false);
     }
 }
 
