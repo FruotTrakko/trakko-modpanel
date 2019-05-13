@@ -49,6 +49,12 @@ class Dashboard {
     updateDashboard() {
         //TODO IMPLEMENT METHOD
     }
+
+    onMessage(message) {
+        this.widgets.forEach((widget) => {
+            widget.onMessage(message);
+        });
+    }
 }
 
 class Column {
@@ -85,6 +91,7 @@ class Widget {
         let widgetTitle = document.createElement('h3');
         widgetTitle.classList.add('widget-title', 'heading');
         widgetTitle.innerText = title.toUpperCase();
+        this.widgetTitle = widgetTitle;
         let widgetMover = document.createElement('div');
         widgetMover.classList.add('widget-mover');
         widgetMover.addEventListener('mousedown', this.onDragMouseDown.bind(this));
@@ -164,11 +171,16 @@ class Widget {
                     if (prevoius) {
                         prevoius.remove();
                     }
-                    let tempWidget = new TempWidget(node, this.widget.clientHeight);
+                    new TempWidget(node, this.widget.clientHeight);
                 }
             }
         }
     }
 
-    onMessage(message) {}
+    setTitle(title) {
+        this.title = title;
+        this.widgetTitle.innerText = title.toUpperCase();
+    }
+
+    onMessage(message) {    }
 }

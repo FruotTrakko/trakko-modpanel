@@ -95,3 +95,33 @@
 .widget-status-statusbutton {
     margin: .25em auto;
 }
+
+.widget-chat-container {
+    margin: .25em 0; 
+    padding-bottom: 0;
+}
+
+.widget-chat-box {
+    display: flex;
+    flex-direction: column;
+    height: 50vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.widget-chat-buttons {
+    display: flex;
+    width: 100%;
+    padding: 0;
+    box-shadow: 0 0 0 1px rgba(80, 80, 80, 0.5);
+    border-radius: .1em;
+}
+
+.widget-chat-message-input {
+    margin: .25em;
+    flex-grow: 1;
+}
+
+.widget-chat-button-send {
+    margin: .25em;
+}

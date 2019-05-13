@@ -59,6 +59,7 @@ chatClient.prototype.onMessage = function onMessage(message){
     if(message !== null){
         let parsed = this.parseMessage(message.data);
         if(parsed !== null){
+            window.dashboard.onMessage(parsed);
             if(parsed.command === "PRIVMSG") {
                 let messageBox = document.querySelector('div.message-box');
                 constructMessageContainer(messageBox, 
