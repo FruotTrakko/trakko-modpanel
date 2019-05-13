@@ -47,9 +47,14 @@ class StatusWidget extends Widget {
 
     constructor(columnElement) {
         super(columnElement, 'Status');
+        this.stati = new Map();
 
         let containerDiv = document.createElement('div');
         containerDiv.classList.add('widget-status-container');
+        this.statusContainer = containerDiv;
+
+        let statusContainer = document.createElement('div');
+        statusContainer.classList.add('widget-status-status-container');
 
         let infoText = document.createElement('p');
         infoText.classList.add('widget-status-infotext', 'heading');
@@ -59,9 +64,12 @@ class StatusWidget extends Widget {
         statusText.innerText = 'WAITING';
         statusText.style.color = 'rgb(238, 169, 43)';
         this.statusText = statusText;
+        this.stati.set('twitch', statusText);
 
-        containerDiv.appendChild(infoText);
-        containerDiv.appendChild(statusText);
+        statusContainer.appendChild(infoText);
+        statusContainer.appendChild(statusText);
+
+        containerDiv.appendChild(statusContainer);
 
         let buttonDiv = document.createElement('div');
         buttonDiv.classList.add('widget-status-buttoncontainer');
@@ -78,15 +86,37 @@ class StatusWidget extends Widget {
         this.contentElement.appendChild(buttonDiv);
     }
 
-    setStatus(status, color, buttonText, buttonCallback, bind) {
-        this.statusText.innerText = status.toUpperCase();
-        this.statusText.style.color = color;
+    addStatus(key, initialState, color) {
+        let statusContainer = document.createElement('div');
+        statusContainer.classList.add('widget-status-status-container');
 
-        this.statusButton.innerText = buttonText.toUpperCase();
-        if (bind) {
-            this.statusButton.onclick = buttonCallback.bind(bind);
-        } else {
-            this.statusButton.onclick = buttonCallback
+        let infoText = document.createElement('p');
+        infoText.classList.add('widget-status-infotext', 'heading');
+        infoText.innerText = `${key}: `;
+        let statusText = document.createElement('p');
+        statusText.classList.add('widget-status-statustext', 'heading');
+        statusText.innerText = initialState.toUpperCase();
+        statusText.style.color = color;
+        this.stati.set(key, statusText);
+
+        statusContainer.appendChild(infoText);
+        statusContainer.appendChild(statusText);
+
+        this.statusContainer.appendChild(statusContainer);
+    }
+
+    setStatus(key, status, color, buttonText, buttonCallback, bind) {
+        let obj = this.stati.get(key);
+        obj.innerText = status.toUpperCase();
+        obj.style.color = color;
+
+        if(buttonText) {
+            this.statusButton.innerText = buttonText.toUpperCase();
+            if (bind) {
+                this.statusButton.onclick = buttonCallback.bind(bind);
+            } else {
+                this.statusButton.onclick = buttonCallback
+            }
         }
     }
 
@@ -169,13 +199,20 @@ class ChatWidget extends Widget {
             return;
         }
 
-        //TODO CHANGE TO PROMISE GIVEN WHEN WEBSOCKET IS CONNECTED
-        setTimeout(() => {
+        new Promise((resolve, reject) => {
+            tryUntilTrue(window.chatClient.isReady.bind(window.chatClient), 1000, 10, resolve, reject);
+        }).then(() => {
             window.chatClient.joinChannel(channel);
             cacheChannelBadges(channel, `${channel.substr(1)}-badges`);
-        }, 1000);
+        }).catch((error) => {
+            console.error(error);
+            showError('Error', 'Couldn\'t bind channel to chat widget!');
+        });
 
-        //TODO ADD STREAM STATUS TO STATUS PANEL
+        checkStreamStatus(channel.slice(1))
+        .then((status) => {
+            window.statusWidget.addStatus(channel, status ? 'Streaming' : 'Offline', status ? 'rgb(173, 97, 224)' : 'rgb(238, 169, 43)');
+        });
     }
 
     onMessage(message) {
@@ -191,6 +228,11 @@ class ChatWidget extends Widget {
                 message.tags.tmiSentTs,
                 false
             );
+        } else if(message.command === 'PING') {
+            checkStreamStatus(channel.slice(1))
+            .then((status) => {
+                window.statusWidget.setStatus(channel, status ? 'Streaming' : 'Offline', status ? 'rgb(173, 97, 224)' : 'rgb(238, 169, 43)');
+            });
         }
     }
 }

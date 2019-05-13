@@ -19,8 +19,8 @@ function onPageLoad(){
         statusButton.setAttribute('onclick', 'initAuth();');
         // OLD ^
 
-        widget2.setStatus('Not logged in', 'rgb(240, 94, 94)', 'log in', initAuth);
-        widget2.setButtonBlocked(false);
+        window.statusWidget.setStatus('twitch', 'Not logged in', 'rgb(240, 94, 94)', 'log in', initAuth);
+        window.statusWidget.setButtonBlocked(false);
     }
 }
 
@@ -109,8 +109,8 @@ chatClient.prototype.onOpen = function onOpen(){
         statusButton.setAttribute('onclick', 'window.chatClient.close();');
         // OLD ^
 
-        widget2.setStatus('connected', 'rgb(84, 195, 48)', 'disconnect', window.chatClient.close, window.chatClient);
-        widget2.setButtonBlocked(false);
+        window.statusWidget.setStatus('twitch', 'connected', 'rgb(84, 195, 48)', 'disconnect', window.chatClient.close, window.chatClient);
+        window.statusWidget.setButtonBlocked(false);
     }
 };
 
@@ -174,8 +174,8 @@ chatClient.prototype.onClose = function onClose(){
     statusButton.setAttribute('onclick', 'window.chatClient.open();');
     // OLD ^
 
-    widget2.setStatus('not connected', 'rgb(238, 169, 43)', 'connect', window.chatClient.open, window.chatClient);
-    widget2.setButtonBlocked(false);
+    window.statusWidget.setStatus('twitch', 'not connected', 'rgb(238, 169, 43)', 'connect', window.chatClient.open, window.chatClient);
+    window.statusWidget.setButtonBlocked(false);
 };
 
 chatClient.prototype.close = function close(){
@@ -184,6 +184,10 @@ chatClient.prototype.close = function close(){
     } else {
         showError('Error', 'Connect before trying to disconnect!');
     }
+};
+
+chatClient.prototype.isReady = function isReady() {
+    return this.webSocket && this.webSocket.readyState === 1;
 };
 
 //Original message (message.data)

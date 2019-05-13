@@ -77,7 +77,11 @@
 .widget-status-container {
     display: flex;
     margin: .5em 0;
-    align-items: center;
+    flex-direction: column;
+}
+
+.widget-status-status-container {
+    display: flex;
 }
 
 .widget-status-infotext {
