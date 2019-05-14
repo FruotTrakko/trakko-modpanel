@@ -217,7 +217,10 @@ class ChatWidget extends Widget {
 
     onMessage(message) {
         console.log(message);
-        if (message.command === "PRIVMSG") {
+        if (message.command === 'PRIVMSG') {
+            if(message.channel !== this.channel) {
+                return;
+            }
             constructMessageContainer(this.messageBox,
                 (message.tags.displayName !== '' ? message.tags.displayName : message.username),
                 message.tags.color,
@@ -229,9 +232,9 @@ class ChatWidget extends Widget {
                 false
             );
         } else if(message.command === 'PING') {
-            checkStreamStatus(channel.slice(1))
+            checkStreamStatus(this.channel.slice(1))
             .then((status) => {
-                window.statusWidget.setStatus(channel, status ? 'Streaming' : 'Offline', status ? 'rgb(173, 97, 224)' : 'rgb(238, 169, 43)');
+                window.statusWidget.setStatus(this.channel, status ? 'Streaming' : 'Offline', status ? 'rgb(173, 97, 224)' : 'rgb(238, 169, 43)');
             });
         }
     }

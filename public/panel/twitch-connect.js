@@ -8,15 +8,15 @@ function onPageLoad(){
     } else {
         showWarning('Important', 'You have to login with your twitch account to use our service!');
         // OLD REPLACED WITH UNDERNEATH CODE
-        let statusText = document.querySelector('p.status');
-        statusText.innerText = 'NOT LOGGED IN';
-        statusText.classList.remove('green-text');
-        statusText.classList.remove('orange-text');
-        statusText.classList.add('red-text');
-        let statusButton = document.querySelector('button.status-button');
-        statusButton.innerText = 'LOG IN';
-        statusButton.classList.remove('blocked');
-        statusButton.setAttribute('onclick', 'initAuth();');
+        // let statusText = document.querySelector('p.status');
+        // statusText.innerText = 'NOT LOGGED IN';
+        // statusText.classList.remove('green-text');
+        // statusText.classList.remove('orange-text');
+        // statusText.classList.add('red-text');
+        // let statusButton = document.querySelector('button.status-button');
+        // statusButton.innerText = 'LOG IN';
+        // statusButton.classList.remove('blocked');
+        // statusButton.setAttribute('onclick', 'initAuth();');
         // OLD ^
 
         window.statusWidget.setStatus('twitch', 'Not logged in', 'rgb(240, 94, 94)', 'log in', initAuth);
@@ -61,17 +61,17 @@ chatClient.prototype.onMessage = function onMessage(message){
         if(parsed !== null){
             window.dashboard.onMessage(parsed);
             if(parsed.command === "PRIVMSG") {
-                let messageBox = document.querySelector('div.message-box');
-                constructMessageContainer(messageBox, 
-                    (parsed.tags.displayName !== '' ? parsed.tags.displayName : parsed.username), 
-                    parsed.tags.color, 
-                    parsed.message,
-                    parsed.tags.badges,
-                    (parsed.message.startsWith('ACTION')),
-                    parsed.channel,
-                    parsed.tags.tmiSentTs,
-                    false
-                    );
+                // let messageBox = document.querySelector('div.message-box');
+                // constructMessageContainer(messageBox, 
+                //     (parsed.tags.displayName !== '' ? parsed.tags.displayName : parsed.username), 
+                //     parsed.tags.color, 
+                //     parsed.message,
+                //     parsed.tags.badges,
+                //     (parsed.message.startsWith('ACTION')),
+                //     parsed.channel,
+                //     parsed.tags.tmiSentTs,
+                //     false
+                //     );
             } else if(parsed.command === "PING") {
                 this.webSocket.send("PONG :" + parsed.message);
                 checkStreams();
@@ -98,15 +98,15 @@ chatClient.prototype.onOpen = function onOpen(){
         showInformation('Connected', 'Successfully connected to a Twitch IRC server! Good luck!');
         
         // OLD REPLACED WITH UNDERNEATH CODE
-        let statusText = document.querySelector('p.status');
-        statusText.innerText = 'CONNECTED';
-        statusText.classList.remove('red-text');
-        statusText.classList.remove('orange-text');
-        statusText.classList.add('green-text');
-        let statusButton = document.querySelector('button.status-button');
-        statusButton.innerText = 'DISCONNECT';
-        statusButton.classList.remove('blocked');
-        statusButton.setAttribute('onclick', 'window.chatClient.close();');
+        // let statusText = document.querySelector('p.status');
+        // statusText.innerText = 'CONNECTED';
+        // statusText.classList.remove('red-text');
+        // statusText.classList.remove('orange-text');
+        // statusText.classList.add('green-text');
+        // let statusButton = document.querySelector('button.status-button');
+        // statusButton.innerText = 'DISCONNECT';
+        // statusButton.classList.remove('blocked');
+        // statusButton.setAttribute('onclick', 'window.chatClient.close();');
         // OLD ^
 
         window.statusWidget.setStatus('twitch', 'connected', 'rgb(84, 195, 48)', 'disconnect', window.chatClient.close, window.chatClient);
@@ -149,29 +149,30 @@ chatClient.prototype.getChannels = function getChannels(){
 chatClient.prototype.sendMessage = function(channel, message){
     this.webSocket.send(`PRIVMSG ${channel} :${message}`);
 
-    let messageBox = document.querySelector('div.message-box');
-    constructMessageContainer(messageBox, this.username, null, message, '', false, channel, Date.now(), true);
+    // TODO: LOOPBACK SENT MESSAGES
+    // let messageBox = document.querySelector('div.message-box');
+    // constructMessageContainer(messageBox, this.username, null, message, '', false, channel, Date.now(), true);
 }
 
 chatClient.prototype.onClose = function onClose(){
     this.channels = [];
-    let parentElement = document.querySelector('div.channel-container');
-    parentElement.childNodes.forEach((child) => {
-        child.remove();
-    });
+    // let parentElement = document.querySelector('div.channel-container');
+    // parentElement.childNodes.forEach((child) => {
+    //     child.remove();
+    // });
     console.log('Disconnected from the chat server.');
     showInformation('Disconnected', 'Successfully disconnected from the Twitch IRC servers!');
 
     // OLD REPLACED WITH UNDERNEATH CODE
-    let statusText = document.querySelector('p.status');
-    statusText.innerText = 'NOT CONNECTED';
-    statusText.classList.remove('red-text');
-    statusText.classList.remove('green-text');
-    statusText.classList.add('orange-text');
-    let statusButton = document.querySelector('button.status-button');
-    statusButton.innerText = 'CONNECT';
-    statusButton.classList.remove('blocked');
-    statusButton.setAttribute('onclick', 'window.chatClient.open();');
+    // let statusText = document.querySelector('p.status');
+    // statusText.innerText = 'NOT CONNECTED';
+    // statusText.classList.remove('red-text');
+    // statusText.classList.remove('green-text');
+    // statusText.classList.add('orange-text');
+    // let statusButton = document.querySelector('button.status-button');
+    // statusButton.innerText = 'CONNECT';
+    // statusButton.classList.remove('blocked');
+    // statusButton.setAttribute('onclick', 'window.chatClient.open();');
     // OLD ^
 
     window.statusWidget.setStatus('twitch', 'not connected', 'rgb(238, 169, 43)', 'connect', window.chatClient.open, window.chatClient);

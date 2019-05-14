@@ -1,7 +1,7 @@
-function test(){
-    const messageBox = document.querySelector('div.message-box');
-    constructMessageContainer(messageBox, 'Trakko', '#ff2304', randomString(100), new Map().set('moderator', '1'), false, '#fruottrakko', Date.now().toString(10));
-}
+// function test(){
+//     const messageBox = document.querySelector('div.message-box');
+//     constructMessageContainer(messageBox, 'Trakko', '#ff2304', randomString(100), new Map().set('moderator', '1'), false, '#fruottrakko', Date.now().toString(10));
+// }
 
 function randomString(length){
     let str = '';
@@ -245,92 +245,92 @@ function showInformation(title, detail){
     showNotificationbar(title, detail, 'rgb(84, 195, 48)');
 }
 
-function bindChannel(){
-    let channel = document.querySelector('input.channel-name').value;
-    if(channel === '#' || channel === ''){
-        showError('Error', 'The channel name must be at least one character long');
-        return;
-    }
-    window.chatClient.joinChannel(channel);
-    cacheChannelBadges(channel, `${channel.substr(1)}-badges`);
+// function bindChannel(){
+//     let channel = document.querySelector('input.channel-name').value;
+//     if(channel === '#' || channel === ''){
+//         showError('Error', 'The channel name must be at least one character long');
+//         return;
+//     }
+//     window.chatClient.joinChannel(channel);
+//     cacheChannelBadges(channel, `${channel.substr(1)}-badges`);
 
-    document.querySelector('input.channel-name').value = '#';
-    let parentElement = document.querySelector('div.channel-container');
-    let channelDiv = document.createElement('div');
-    channelDiv.addEventListener('click', selectChannel);
-    channelDiv.setAttribute('name', channel);
-    channelDiv.classList.add('channel');
+//     document.querySelector('input.channel-name').value = '#';
+//     let parentElement = document.querySelector('div.channel-container');
+//     let channelDiv = document.createElement('div');
+//     channelDiv.addEventListener('click', selectChannel);
+//     channelDiv.setAttribute('name', channel);
+//     channelDiv.classList.add('channel');
 
-    let channelParagraph = document.createElement('p');
-    channelParagraph.innerText = channel;
-    channelParagraph.classList.add('channel-name');
-    channelParagraph.classList.add('heading');
-    let channelStatus = document.createElement('p');
-    channelStatus.classList.add('channel-status');
-    channelStatus.classList.add('heading');
-    let channelLeaver = document.createElement('p');
-    channelLeaver.innerText = 'X';
-    channelLeaver.addEventListener('click', unbindChannel)
-    channelLeaver.classList.add('channel-leaver');
+//     let channelParagraph = document.createElement('p');
+//     channelParagraph.innerText = channel;
+//     channelParagraph.classList.add('channel-name');
+//     channelParagraph.classList.add('heading');
+//     let channelStatus = document.createElement('p');
+//     channelStatus.classList.add('channel-status');
+//     channelStatus.classList.add('heading');
+//     let channelLeaver = document.createElement('p');
+//     channelLeaver.innerText = 'X';
+//     channelLeaver.addEventListener('click', unbindChannel)
+//     channelLeaver.classList.add('channel-leaver');
 
-    var selectedChannel = getSelectedChannel();
-    console.log(selectedChannel);
-    if(!selectedChannel){
-        channelDiv.classList.add('channel-selected');
-    }
+//     var selectedChannel = getSelectedChannel();
+//     console.log(selectedChannel);
+//     if(!selectedChannel){
+//         channelDiv.classList.add('channel-selected');
+//     }
 
-    channelDiv.appendChild(channelParagraph);
-    channelDiv.appendChild(channelStatus);
-    channelDiv.appendChild(channelLeaver);
+//     channelDiv.appendChild(channelParagraph);
+//     channelDiv.appendChild(channelStatus);
+//     channelDiv.appendChild(channelLeaver);
 
-    parentElement.appendChild(channelDiv);
+//     parentElement.appendChild(channelDiv);
 
-    checkStreams();
-}
+//     checkStreams();
+// }
 
-function unbindChannel(event){
-    let channel = event.srcElement.parentNode.getAttribute('name');
-    if(channel === '#' || channel === ''){
-        showError('Error', 'The channel name must be at least one character long');
-        return;
-    }
-    window.chatClient.leaveChannel(channel);
+// function unbindChannel(event){
+//     let channel = event.srcElement.parentNode.getAttribute('name');
+//     if(channel === '#' || channel === ''){
+//         showError('Error', 'The channel name must be at least one character long');
+//         return;
+//     }
+//     window.chatClient.leaveChannel(channel);
 
-    let parentElement = document.querySelector('div.channel-container');
-    parentElement.removeChild(parentElement.children.namedItem(channel));
-}
+//     let parentElement = document.querySelector('div.channel-container');
+//     parentElement.removeChild(parentElement.children.namedItem(channel));
+// }
 
-function getSelectedChannel(){
-    let channelParent = document.querySelector('div.channel-container');
-    for(let child of channelParent.childNodes){
-        if(isSelectedChannel(child)){
-            return child;
-        }
-    }
-}
+// function getSelectedChannel(){
+//     let channelParent = document.querySelector('div.channel-container');
+//     for(let child of channelParent.childNodes){
+//         if(isSelectedChannel(child)){
+//             return child;
+//         }
+//     }
+// }
 
-function isSelectedChannel(channel){
-    return channel.classList.contains('channel-selected');
-}
+// function isSelectedChannel(channel){
+//     return channel.classList.contains('channel-selected');
+// }
 
-function selectChannel(event){
-    var channel;
-    if(event.srcElement.tagName !== 'DIV'){
-        if(event.srcElement.classList.contains('channel-leaver')){
-            return;
-        }
-        channel = event.srcElement.parentNode;
-    } else {
-        channel = event.srcElement;
-    }
-    for(let child of channel.parentNode.childNodes){
-        child.classList.remove('channel-selected');
-    }
-    channel.classList.add('channel-selected');
+// function selectChannel(event){
+//     var channel;
+//     if(event.srcElement.tagName !== 'DIV'){
+//         if(event.srcElement.classList.contains('channel-leaver')){
+//             return;
+//         }
+//         channel = event.srcElement.parentNode;
+//     } else {
+//         channel = event.srcElement;
+//     }
+//     for(let child of channel.parentNode.childNodes){
+//         child.classList.remove('channel-selected');
+//     }
+//     channel.classList.add('channel-selected');
 
-    let messageInput = document.querySelector('input.message-input');
-    messageInput.placeholder = `Type your message here! - ${getSelectedChannel().getAttribute('name').toUpperCase()}`;
-}
+//     let messageInput = document.querySelector('input.message-input');
+//     messageInput.placeholder = `Type your message here! - ${getSelectedChannel().getAttribute('name').toUpperCase()}`;
+// }
 
 function checkNotEmpty(event){
     let input = event.srcElement;
@@ -350,51 +350,51 @@ function checkForEnter(event){
     }
 }
 
-function sendMessage(){
-    let messageInput = document.querySelector('input.message-input');
-    let message = messageInput.value;
-    messageInput.value = '';
+// function sendMessage(){
+//     let messageInput = document.querySelector('input.message-input');
+//     let message = messageInput.value;
+//     messageInput.value = '';
 
-    let channel = getSelectedChannel().getAttribute('name');
+//     let channel = getSelectedChannel().getAttribute('name');
 
-    console.log(message);
-    console.log(channel);
+//     console.log(message);
+//     console.log(channel);
 
-    if(!channel){
-        if(window.chatClient.getChannels().length === 0){
-            showError('Error', 'Join a channel before trying to send a message!');
-            return;
-        }
-        showError('Error', 'You must select a channel to send a message to first!');
-        return;
-    }
-    if(!message){
-        showError('Error', 'The message to send must not be empty!');
-        return;
-    }
+//     if(!channel){
+//         if(window.chatClient.getChannels().length === 0){
+//             showError('Error', 'Join a channel before trying to send a message!');
+//             return;
+//         }
+//         showError('Error', 'You must select a channel to send a message to first!');
+//         return;
+//     }
+//     if(!message){
+//         showError('Error', 'The message to send must not be empty!');
+//         return;
+//     }
 
-    window.chatClient.sendMessage(channel, message);
-}
+//     window.chatClient.sendMessage(channel, message);
+// }
 
-function checkStreams(){
-    let channelContainer = document.querySelector('div.channel-container');
-    channelContainer.childNodes.forEach((child) => {
-        let streamerName = child.getAttribute('name').slice(1);
-        checkStreamStatus(streamerName)
-        .then((res) => {
-            let statusElement = child.childNodes[1];
-            if(res){
-                statusElement.innerText = 'STREAMING';
-                statusElement.classList.remove('orange-text');
-                statusElement.classList.add('purple-text');
-            } else {
-                statusElement.innerText = 'OFFLINE';
-                statusElement.classList.remove('purple-text');
-                statusElement.classList.add('orange-text');
-            }
-        });
-    });
-}
+// function checkStreams(){
+//     let channelContainer = document.querySelector('div.channel-container');
+//     channelContainer.childNodes.forEach((child) => {
+//         let streamerName = child.getAttribute('name').slice(1);
+//         checkStreamStatus(streamerName)
+//         .then((res) => {
+//             let statusElement = child.childNodes[1];
+//             if(res){
+//                 statusElement.innerText = 'STREAMING';
+//                 statusElement.classList.remove('orange-text');
+//                 statusElement.classList.add('purple-text');
+//             } else {
+//                 statusElement.innerText = 'OFFLINE';
+//                 statusElement.classList.remove('purple-text');
+//                 statusElement.classList.add('orange-text');
+//             }
+//         });
+//     });
+// }
 
 function checkStreamStatus(streamName){
     return Promise.resolve(sendRequest(`https://api.twitch.tv/helix/streams?user_login=${streamName}`, false))
