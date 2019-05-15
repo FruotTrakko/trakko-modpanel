@@ -110,7 +110,7 @@ class StatusWidget extends Widget {
         obj.innerText = status.toUpperCase();
         obj.style.color = color;
 
-        if(buttonText) {
+        if (buttonText) {
             this.statusButton.innerText = buttonText.toUpperCase();
             if (bind) {
                 this.statusButton.onclick = buttonCallback.bind(bind);
@@ -181,7 +181,7 @@ class ChatWidget extends Widget {
 
     sendMessage() {
         let message = this.input.value;
-        if(!message) {
+        if (!message) {
             showError('Error', 'The message to send must not be empty!');
             return;
         }
@@ -210,15 +210,15 @@ class ChatWidget extends Widget {
         });
 
         checkStreamStatus(channel.slice(1))
-        .then((status) => {
-            window.statusWidget.addStatus(channel, status ? 'Streaming' : 'Offline', status ? 'rgb(173, 97, 224)' : 'rgb(238, 169, 43)');
-        });
+            .then((status) => {
+                window.statusWidget.addStatus(channel, status ? 'Streaming' : 'Offline', status ? 'rgb(173, 97, 224)' : 'rgb(238, 169, 43)');
+            });
     }
 
     onMessage(message) {
         console.log(message);
         if (message.command === 'PRIVMSG') {
-            if(message.channel !== this.channel) {
+            if (message.channel !== this.channel) {
                 return;
             }
             constructMessageContainer(this.messageBox,
@@ -231,11 +231,32 @@ class ChatWidget extends Widget {
                 message.tags.tmiSentTs,
                 false
             );
-        } else if(message.command === 'PING') {
+        } else if (message.command === 'PING') {
             checkStreamStatus(this.channel.slice(1))
-            .then((status) => {
-                window.statusWidget.setStatus(this.channel, status ? 'Streaming' : 'Offline', status ? 'rgb(173, 97, 224)' : 'rgb(238, 169, 43)');
-            });
+                .then((status) => {
+                    window.statusWidget.setStatus(this.channel, status ? 'Streaming' : 'Offline', status ? 'rgb(173, 97, 224)' : 'rgb(238, 169, 43)');
+                });
+        } else if (message.command === 'SELF') {
+            if (message.channel !== this.channel) {
+                return;
+            }
+
+            this.selfMessage = message;
+        } else if (message.command === 'USERSTATE') {
+            if (this.selfMessage) {
+                constructMessageContainer(this.messageBox,
+                    (message.tags.displayName !== '' ? message.tags.displayName : message.username),
+                    message.tags.color,
+                    this.selfMessage.message,
+                    message.tags.badges,
+                    (message.message.startsWith('ACTION')),
+                    this.selfMessage.channel,
+                    Date.now(),
+                    true
+                );
+
+                this.selfMessage = null;
+            }
         }
     }
 }

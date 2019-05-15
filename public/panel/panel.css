@@ -214,7 +214,7 @@ div.message {
 }
 
 div.message-self{
-    background-color: rgb(60, 0, 0) !important;
+    background-color: rgb(61, 40, 40) !important;
 }
 
 div.message:nth-child(even) {
