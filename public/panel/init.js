@@ -10,6 +10,6 @@ new Widget(window.dashboard.getColumn(0).column, 'Test Title');
 new Widget(window.dashboard.getColumn(1).column, 'Cool Widget');
 new Widget(window.dashboard.getColumn(1).column, 'Even cooler Widget!');
 new ChatWidget(window.dashboard.getColumn(0).column, '#clym');
-new ChatWidget(window.dashboard.getColumn(1).column, '#skate702');
+new ChatWidget(window.dashboard.getColumn(1).column);
 
 cacheBadges('https://badges.twitch.tv/v1/badges/global/display','global-badges');

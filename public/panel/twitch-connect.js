@@ -134,7 +134,7 @@ chatClient.prototype.joinChannel = function joinChannel(channel) {
 chatClient.prototype.leaveChannel = function leaveChannel(channel) {
     if (!this.channels.includes(channel)) {
         console.log(`Not connected to channel ${channel}!`);
-        showError('Error', `Not connected to channel ${channel}! Try connecting to it first!`);
+        //showError('Error', `Not connected to channel ${channel}! Try connecting to it first!`);
         return;
     }
     this.webSocket.send('PART ' + channel);

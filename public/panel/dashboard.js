@@ -87,6 +87,7 @@ class Widget {
 
         let widgetHandle = document.createElement('div');
         widgetHandle.classList.add('widget-handle');
+        this.widgetHandle = widgetHandle;
 
         let widgetTitle = document.createElement('h3');
         widgetTitle.classList.add('widget-title', 'heading');
@@ -114,7 +115,7 @@ class Widget {
 
         this.columnElement.insertBefore(widgetDiv, this.columnElement.querySelector('.widget-new-container'));
 
-        if(dashboard) {
+        if (dashboard) {
             dashboard.addWidget(this)
         } else {
             window.dashboard.addWidget(this);
@@ -141,7 +142,7 @@ class Widget {
         document.onmousemove = null;
 
         let temp = document.querySelector('.widget-temp');
-        if(temp){
+        if (temp) {
             temp.replaceWith(this.widget);
             this.widget.style = '';
         }
@@ -182,5 +183,26 @@ class Widget {
         this.widgetTitle.innerText = title.toUpperCase();
     }
 
-    onMessage(message) {    }
+    onMessage(message) { }
+
+    addSettings() {
+        if (this.widgetSettings) {
+            return;
+        }
+
+        let widgetSettings = document.createElement('div');
+        widgetSettings.classList.add('widget-settings');
+        widgetSettings.addEventListener('click', this.toggleSettings.bind(this));
+        this.widgetSettings = widgetSettings;
+
+        let widgetSettingsIcon = document.createElement('span');
+        widgetSettingsIcon.classList.add('widget-icon', 'fas', 'fa-cog');
+        widgetSettings.appendChild(widgetSettingsIcon);
+
+        this.widgetMover.style.margin = '0 0 0 .05em';
+
+        this.widgetHandle.insertBefore(widgetSettings, this.widgetMover);
+    }
+
+    toggleSettings(event) { }
 }

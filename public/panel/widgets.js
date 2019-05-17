@@ -105,6 +105,15 @@ class StatusWidget extends Widget {
         this.statusContainer.appendChild(statusContainer);
     }
 
+    removeStatus(key) {
+        let obj = this.stati.get(key);
+        this.stati.delete(key);
+
+        if (obj) {
+            obj.remove();
+        }
+    }
+
     setStatus(key, status, color, buttonText, buttonCallback, bind) {
         let obj = this.stati.get(key);
         obj.innerText = status.toUpperCase();
@@ -151,26 +160,51 @@ class ChatWidget extends Widget {
         sendButton.classList.add('widget-chat-button-send');
         sendButton.innerText = 'Send';
         sendButton.type = 'button';
-        sendButton.onclick = this.sendMessage;
+        sendButton.onclick = this.sendMessage.bind(this);
         this.sendButton = sendButton;
+
+        let modalDiv = document.createElement('div');
+        modalDiv.classList.add('widget-chat-settings', 'widget-container');
+        this.settingsModal = modalDiv;
+
+        let settingsHeader = document.createElement('h3');
+        settingsHeader.classList.add('heading', 'widget-chat-settings-header');
+        settingsHeader.innerText = 'SETTINGS';
+        let channelInput = document.createElement('input');
+        channelInput.classList.add('widget-chat-settings-channel-input');
+        channelInput.type = 'text';
+        channelInput.value = '#';
+        channelInput.onkeyup = this.checkSettingsKey.bind(this);
+        this.channelInput = channelInput;
+        let channelButton = document.createElement('button');
+        channelButton.classList.add('widget-chat-settings-channel-button');
+        channelButton.type = 'button';
+        channelButton.innerText = 'JOIN';
+        channelButton.onclick = this.bindNewChannel.bind(this);
+
+        modalDiv.appendChild(settingsHeader);
+        modalDiv.appendChild(channelInput);
+        modalDiv.appendChild(channelButton);
+
+        buttonDiv.appendChild(messageInput);
+        buttonDiv.appendChild(sendButton);
+
+        this.contentElement.appendChild(modalDiv);
+        this.contentElement.appendChild(messageBoxDiv);
+        this.contentElement.appendChild(buttonDiv);
 
         if (channel) {
             this.channel = channel;
             this.setTitle(`Chat - ${this.channel}`);
             this.bindChannel(this.channel);
+            this.settingsModal.classList.add('widget-hidden');
         } else {
-            this.contentElement.classList.add('widget-chat-overlay-blur');
             this.input.classList.add('widget-chat-blocked');
             this.sendButton.classList.add('widget-chat-blocked');
-
-            //TODO ADD CHANNEL SELECT
+            this.input.setAttribute('disabled', '');
         }
 
-        buttonDiv.appendChild(messageInput);
-        buttonDiv.appendChild(sendButton);
-
-        this.contentElement.appendChild(messageBoxDiv);
-        this.contentElement.appendChild(buttonDiv);
+        this.addSettings();
     }
 
     checkSendKey(event) {
@@ -179,7 +213,24 @@ class ChatWidget extends Widget {
         }
     }
 
-    sendMessage() {
+    checkSettingsKey(event) {
+        let input = event.srcElement;
+
+        if (input.value === '') {
+            input.value = '#';
+            showWarning('Important', 'Channelname must start with a numbersign/hashtag!');
+        }
+
+        if (event.keyCode == 13) {
+            this.bindNewChannel(null, input);
+        }
+    }
+
+    sendMessage(event) {
+        if (event.srcElement.classList.contains('widget-chat-blocked')) {
+            return;
+        }
+
         let message = this.input.value;
         if (!message) {
             showError('Error', 'The message to send must not be empty!');
@@ -215,8 +266,36 @@ class ChatWidget extends Widget {
             });
     }
 
+    bindNewChannel(event, inputElement) {
+        let input;
+        if (event) {
+            input = this.channelInput;
+        } else {
+            input = inputElement;
+        }
+
+        let newChannel = input.value;
+        input.value = '#';
+
+        window.chatClient.leaveChannel(this.channel);
+        window.statusWidget.removeStatus(this.channel);
+
+        this.input.classList.remove('widget-chat-blocked');
+        this.sendButton.classList.remove('widget-chat-blocked');
+        this.input.removeAttribute('disabled');
+
+        this.channel = newChannel;
+        this.setTitle(`Chat - ${this.channel}`);
+        this.bindChannel(newChannel);
+    }
+
     onMessage(message) {
         console.log(message);
+        console.log(`Listening for ${this.channel}`);
+        if (!this.channel) {
+            return;
+        }
+
         if (message.command === 'PRIVMSG') {
             if (message.channel !== this.channel) {
                 return;
@@ -258,5 +337,9 @@ class ChatWidget extends Widget {
                 this.selfMessage = null;
             }
         }
+    }
+
+    toggleSettings(event) {
+        this.settingsModal.classList.toggle('widget-hidden');
     }
 }
