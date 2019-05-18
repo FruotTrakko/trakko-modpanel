@@ -7,17 +7,6 @@ function onPageLoad() {
         window.chatClient.open();
     } else {
         showWarning('Important', 'You have to login with your twitch account to use our service!');
-        // OLD REPLACED WITH UNDERNEATH CODE
-        // let statusText = document.querySelector('p.status');
-        // statusText.innerText = 'NOT LOGGED IN';
-        // statusText.classList.remove('green-text');
-        // statusText.classList.remove('orange-text');
-        // statusText.classList.add('red-text');
-        // let statusButton = document.querySelector('button.status-button');
-        // statusButton.innerText = 'LOG IN';
-        // statusButton.classList.remove('blocked');
-        // statusButton.setAttribute('onclick', 'initAuth();');
-        // OLD ^
 
         window.statusWidget.setStatus('twitch', 'Not logged in', 'rgb(240, 94, 94)', 'log in', initAuth);
         window.statusWidget.setButtonBlocked(false);
@@ -58,28 +47,17 @@ chatClient.prototype.onError = function onError(message) {
 chatClient.prototype.onMessage = function onMessage(message) {
     if (message !== null) {
         let parsed = this.parseMessage(message.data);
+
         if (parsed !== null) {
             window.dashboard.onMessage(parsed);
-            if (parsed.command === "PRIVMSG") {
-                // let messageBox = document.querySelector('div.message-box');
-                // constructMessageContainer(messageBox, 
-                //     (parsed.tags.displayName !== '' ? parsed.tags.displayName : parsed.username), 
-                //     parsed.tags.color, 
-                //     parsed.message,
-                //     parsed.tags.badges,
-                //     (parsed.message.startsWith('ACTION')),
-                //     parsed.channel,
-                //     parsed.tags.tmiSentTs,
-                //     false
-                //     );
-            } else if (parsed.command === "PING") {
+
+            if (parsed.command === "PING") {
                 this.webSocket.send("PONG :" + parsed.message);
-                // checkStreams();
             } else {
-                console.log('Unidentified command!');
-                if (parsed.command === null) {
+                if (parsed.command === null || parsed.command === 'PRIVMSG' || parsed.command === 'CLEARMSG') {
                     return;
                 }
+                console.log('Unidentified command!');
                 showWarning('Warning', `Recieved unregistered command \'${parsed.command.trim()}\'!`);
             }
         }
@@ -96,18 +74,6 @@ chatClient.prototype.onOpen = function onOpen() {
         socket.send('PASS ' + this.password);
         socket.send('NICK ' + this.username);
         showInformation('Connected', 'Successfully connected to a Twitch IRC server! Good luck!');
-
-        // OLD REPLACED WITH UNDERNEATH CODE
-        // let statusText = document.querySelector('p.status');
-        // statusText.innerText = 'CONNECTED';
-        // statusText.classList.remove('red-text');
-        // statusText.classList.remove('orange-text');
-        // statusText.classList.add('green-text');
-        // let statusButton = document.querySelector('button.status-button');
-        // statusButton.innerText = 'DISCONNECT';
-        // statusButton.classList.remove('blocked');
-        // statusButton.setAttribute('onclick', 'window.chatClient.close();');
-        // OLD ^
 
         window.statusWidget.setStatus('twitch', 'connected', 'rgb(84, 195, 48)', 'disconnect', window.chatClient.close, window.chatClient);
         window.statusWidget.setButtonBlocked(false);
@@ -159,30 +125,12 @@ chatClient.prototype.sendMessage = function (channel, message) {
     };
 
     window.dashboard.onMessage(messageObject);
-    // let messageBox = document.querySelector('div.message-box');
-    // constructMessageContainer(messageBox, this.username, null, message, '', false, channel, Date.now(), true);
 }
 
 chatClient.prototype.onClose = function onClose() {
     this.channels = [];
-    // let parentElement = document.querySelector('div.channel-container');
-    // parentElement.childNodes.forEach((child) => {
-    //     child.remove();
-    // });
     console.log('Disconnected from the chat server.');
     showInformation('Disconnected', 'Successfully disconnected from the Twitch IRC servers!');
-
-    // OLD REPLACED WITH UNDERNEATH CODE
-    // let statusText = document.querySelector('p.status');
-    // statusText.innerText = 'NOT CONNECTED';
-    // statusText.classList.remove('red-text');
-    // statusText.classList.remove('green-text');
-    // statusText.classList.add('orange-text');
-    // let statusButton = document.querySelector('button.status-button');
-    // statusButton.innerText = 'CONNECT';
-    // statusButton.classList.remove('blocked');
-    // statusButton.setAttribute('onclick', 'window.chatClient.open();');
-    // OLD ^
 
     window.statusWidget.setStatus('twitch', 'not connected', 'rgb(238, 169, 43)', 'connect', window.chatClient.open, window.chatClient);
     window.statusWidget.setButtonBlocked(false);
@@ -216,23 +164,6 @@ chatClient.prototype.timeoutUser = function timeoutUser(channel, username, durat
     this.sendMessage(channel, `/timeout ${username} ${duration !== null ? duration : ''}`);
 }
 
-//Original message (message.data)
-/* "@badge-info=subscriber/2;
-    badges=subscriber/0,sub-gifter/1;
-    color=#0000FF;
-    display-name=felstasche;
-    emotes=;
-    flags=;
-    id=730736c7-b5a0-41df-a76a-36532e1fb8f7;
-    mod=0;
-    room-id=21045643;
-    subscriber=1;
-    tmi-sent-ts=1555682808597;
-    turbo=0;
-    user-id=254916435;
-    user-type= 
-    :felstasche!felstasche@felstasche.tmi.twitch.tv PRIVMSG #clym :Sub Server noch ein bisschen ?"
-*/
 chatClient.prototype.parseMessage = function parseMessage(rawMessage) {
     var parsedMessage = {
         message: null,
@@ -244,14 +175,12 @@ chatClient.prototype.parseMessage = function parseMessage(rawMessage) {
     };
 
     if (rawMessage[0] === '@') {
-        //calculating indicies
         var tagIndex = rawMessage.indexOf(' '),
             userIndex = rawMessage.indexOf(' ', tagIndex + 1),
             commandIndex = rawMessage.indexOf(' ', userIndex + 1),
             channelIndex = rawMessage.indexOf(' ', commandIndex + 1),
             messageIndex = rawMessage.indexOf(':', channelIndex + 1);
 
-        //parsing into parsedMessage
         parsedMessage.tags = rawMessage.slice(0, tagIndex);
         parsedMessage.username = rawMessage.slice(tagIndex + 2, rawMessage.indexOf('!'));
         parsedMessage.command = rawMessage.slice(userIndex + 1, commandIndex);
@@ -275,7 +204,6 @@ chatClient.prototype.parseMessage = function parseMessage(rawMessage) {
                 userId: null,
             };
 
-            //get indecies of position of single elements
             var badgeInfoIndex = parsedMessage.tags.indexOf(';'),
                 badgesIndex = parsedMessage.tags.indexOf(';', badgeInfoIndex + 1),
                 colorIndex = parsedMessage.tags.indexOf(';', badgesIndex + 1),
@@ -290,7 +218,6 @@ chatClient.prototype.parseMessage = function parseMessage(rawMessage) {
                 turboIndex = parsedMessage.tags.indexOf(';', tmiSentTsIndex + 1),
                 userIdIndex = parsedMessage.tags.indexOf(';', turboIndex + 1);
 
-            //slice the string an assaign to coresponding object member
             tags.badgeInfo = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=') + 1, badgeInfoIndex);
             tags.badges = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=', badgeInfoIndex) + 1, badgesIndex);
             tags.color = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=', badgesIndex) + 1, colorIndex);
@@ -331,7 +258,6 @@ chatClient.prototype.parseMessage = function parseMessage(rawMessage) {
                 userType: null
             };
 
-            //get indecies of position of single elements
             var badgeInfoIndex = parsedMessage.tags.indexOf(';'),
                 badgesIndex = parsedMessage.tags.indexOf(';', badgeInfoIndex + 1),
                 colorIndex = parsedMessage.tags.indexOf(';', badgesIndex + 1),
@@ -341,7 +267,6 @@ chatClient.prototype.parseMessage = function parseMessage(rawMessage) {
                 subscriberIndex = parsedMessage.tags.indexOf(';', modIndex + 1),
                 userTypeIndex = parsedMessage.tags.indexOf(';', subscriberIndex + 1);
 
-            //slice the string an assaign to coresponding object member
             tags.badgeInfo = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=') + 1, badgeInfoIndex);
             tags.badges = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=', badgeInfoIndex) + 1, badgesIndex);
             tags.color = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=', badgesIndex) + 1, colorIndex);
