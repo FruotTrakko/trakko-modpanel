@@ -148,6 +148,7 @@ span.username {
 
 span.message-text {
     color: whitesmoke;
+    margin: 0 0 0 .25em;
 }
 
 span.message-username-ping {
@@ -157,7 +158,8 @@ span.message-username-ping {
 }
 
 div.message {
-    padding: .3em .5em;
+    padding: .5em .5em 0 .5em;
+    display: inline;
 }
 
 div.message-self{
@@ -175,16 +177,42 @@ img.badge {
 }
 
 p.deleted-text {
+    margin: 0 0 0 .5em;
     color: rgb(240, 94, 94);
     font-weight: bold;
+}
+
+div.end-container {
+    margin: .25em 0;
+    display: flex;
+    float: right;
+}
+
+p.delete-text {
+    margin: 0 .5em 0 0;
+    color: rgb(238, 169, 43);
+    font-size: 85%;
+}
+
+p.delete-text:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+p.timeout-text {
+    margin: 0 .5em 0 0;
+    color: rgb(240, 94, 94);
+    font-size: 85%;
+}
+
+p.timeout-text:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 span.timestamp {
     color: rgb(180, 180, 180);
     font-size: 85%;
-    float: right;
-    padding: .25em 0 0 .15em;
-    
 }
 
 div.status-container {

@@ -230,8 +230,10 @@ class ChatWidget extends Widget {
     }
 
     sendMessage(event) {
-        if (event.srcElement.classList.contains('widget-chat-blocked')) {
-            return;
+        if (event) {
+            if (event.srcElement.classList.contains('widget-chat-blocked')) {
+                return;
+            }
         }
 
         let message = this.input.value;
@@ -310,7 +312,8 @@ class ChatWidget extends Widget {
                 (message.message.startsWith('ACTION')),
                 message.channel,
                 message.tags.tmiSentTs,
-                false
+                false,
+                message.tags.id
             );
         } else if (message.command === 'PING') {
             checkStreamStatus(this.channel.slice(1))
@@ -333,11 +336,21 @@ class ChatWidget extends Widget {
                     (message.message.startsWith('ACTION')),
                     this.selfMessage.channel,
                     Date.now(),
-                    true
+                    true,
+                    null
                 );
 
                 this.selfMessage = null;
             }
+        } else if (message.command === 'CLEARMSG') {
+            if (message.channel !== this.channel) {
+                return;
+            }
+            this.messageBox.childNodes.forEach((child) => {
+                if(child.id == message.tags.targetMsgId) {
+                    markDeleted(child);
+                }
+            });
         }
     }
 

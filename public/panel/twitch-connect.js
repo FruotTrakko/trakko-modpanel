@@ -200,6 +200,22 @@ chatClient.prototype.isReady = function isReady() {
     return this.webSocket && this.webSocket.readyState === 1;
 };
 
+chatClient.prototype.sendRaw = function sendRaw(rawMessage) {
+    if (!this.isReady) {
+        return;
+    }
+
+    this.webSocket.send(rawMessage);
+};
+
+chatClient.prototype.clearMessage = function clearMessage(channel, messageId) {
+    this.sendMessage(channel, `/delete ${messageId}`);
+};
+
+chatClient.prototype.timeoutUser = function timeoutUser(channel, username, duration) {
+    this.sendMessage(channel, `/timeout ${username} ${duration !== null ? duration : ''}`);
+}
+
 //Original message (message.data)
 /* "@badge-info=subscriber/2;
     badges=subscriber/0,sub-gifter/1;
@@ -347,6 +363,25 @@ chatClient.prototype.parseMessage = function parseMessage(rawMessage) {
 
                 tags.badges = badgeMap;
             }
+
+            parsedMessage.tags = tags;
+        } else if (parsedMessage.command === 'CLEARMSG') {
+            var tags = {
+                login: null,
+                roomId: null,
+                targetMsgId: null,
+                tmiSentTs: null
+            }
+
+            var loginIndex = parsedMessage.tags.indexOf(';'),
+                roomIdIndex = parsedMessage.tags.indexOf(';', loginIndex + 1),
+                targetMsgIdIndex = parsedMessage.tags.indexOf(';', roomIdIndex + 1),
+                tmiSentTsIndex = parsedMessage.tags.indexOf(';', targetMsgIdIndex + 1)
+
+            tags.login = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=') + 1, loginIndex);
+            tags.roomId = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=', loginIndex) + 1, roomIdIndex);
+            tags.targetMsgId = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=', roomIdIndex) + 1, targetMsgIdIndex);
+            tags.tmiSentTs = parsedMessage.tags.slice(parsedMessage.tags.indexOf('=', targetMsgIdIndex) + 1, tmiSentTsIndex);
 
             parsedMessage.tags = tags;
         }
