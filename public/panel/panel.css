@@ -177,6 +177,7 @@ img.badge {
 }
 
 p.deleted-text {
+    display: inline;
     margin: 0 0 0 .5em;
     color: rgb(240, 94, 94);
     font-weight: bold;
