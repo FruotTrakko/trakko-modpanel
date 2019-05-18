@@ -110,7 +110,7 @@ class StatusWidget extends Widget {
         this.stati.delete(key);
 
         if (obj) {
-            obj.remove();
+            obj.parentNode.remove();
         }
     }
 
@@ -200,8 +200,11 @@ class ChatWidget extends Widget {
             this.settingsModal.classList.add('widget-hidden');
         } else {
             this.input.classList.add('widget-chat-blocked');
-            this.sendButton.classList.add('widget-chat-blocked');
             this.input.setAttribute('disabled', '');
+            this.sendButton.classList.add('widget-chat-blocked');
+            this.sendButton.setAttribute('disabled', '');
+            this.messageBox.classList.add('widget-chat-overlay-blur');
+            this.input.parentNode.classList.add('widget-chat-overlay-blur');
         }
 
         this.addSettings();
@@ -255,6 +258,7 @@ class ChatWidget extends Widget {
         }).then(() => {
             window.chatClient.joinChannel(channel);
             cacheChannelBadges(channel, `${channel.substr(1)}-badges`);
+            this.clearMessages();
         }).catch((error) => {
             console.error(error);
             showError('Error', 'Couldn\'t bind channel to chat widget!');
@@ -280,13 +284,11 @@ class ChatWidget extends Widget {
         window.chatClient.leaveChannel(this.channel);
         window.statusWidget.removeStatus(this.channel);
 
-        this.input.classList.remove('widget-chat-blocked');
-        this.sendButton.classList.remove('widget-chat-blocked');
-        this.input.removeAttribute('disabled');
-
         this.channel = newChannel;
         this.setTitle(`Chat - ${this.channel}`);
         this.bindChannel(newChannel);
+
+        this.toggleSettings();
     }
 
     onMessage(message) {
@@ -341,5 +343,20 @@ class ChatWidget extends Widget {
 
     toggleSettings(event) {
         this.settingsModal.classList.toggle('widget-hidden');
+
+        this.input.classList.toggle('widget-chat-blocked');
+        this.input.toggleAttribute('disabled');
+        this.sendButton.classList.toggle('widget-chat-blocked');
+        this.sendButton.toggleAttribute('disabled');
+
+        this.messageBox.classList.toggle('widget-chat-overlay-blur');
+        this.input.parentNode.classList.toggle('widget-chat-overlay-blur');
+    }
+
+    clearMessages() {
+        let messages = this.messageBox.childElementCount;
+        for (let j = 0; j < messages; j++) {
+            this.messageBox.firstElementChild.remove();
+        }
     }
 }

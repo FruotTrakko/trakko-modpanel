@@ -1,0 +1,32 @@
+@import url('../fonts.css');
+
+.header-button-panel {
+    margin: 0 .25em 0 auto;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.contact-container {
+    margin: 5em auto;
+    padding: .5em;
+    background-color: rgb(46, 46, 46);
+    color: whitesmoke;
+    box-shadow: 0 0 0 1px rgba(80, 80, 80, 0.5);
+    border-radius: .1em;
+    width: max-content;
+    height: max-content;
+    text-align: center;
+}
+
+p {
+    margin: .25em;
+}
+
+.contact-name {
+    color: rgb(0, 199, 166);
+    font-weight: bold;
+}

@@ -413,3 +413,11 @@ function markDeleted(message){
     deletedText.innerText = '<deleted>';
     deletedText.classList.add('deleted-text');
 }
+
+function redirect(location) {
+    switch (location) {
+        case 'contact':
+            document.location.href = `${document.location.origin}/contact`;
+            break;
+    }
+}
