@@ -20,11 +20,24 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
     usernameParagraph.innerText = senderName;
     if (senderColor == null || senderColor === '') {
         usernameParagraph.style.color = '#ffffff';
-    } else if (senderColor === '#0000FF' || senderColor === "#454545" || senderColor === '#6620fe') {
-        usernameParagraph.style.color = '#9f54ff';
+    } else if (senderColor === '#B22222') {
+        usernameParagraph.style.color = '#DB4A3F';
+    } else if (senderColor === '#8A2BE2') {
+        usernameParagraph.style.color = '#B454FF';
+    } else if (senderColor === '#B60606') {
+        usernameParagraph.style.color = '#EF4B31';
+    } else if (senderColor === '#B31919') {
+        usernameParagraph.style.color = '#EC5241';
+    } else if (senderColor === '#0000FF') {
+        usernameParagraph.style.color = '#8B58FF';
+    } else if (senderColor === '#5A032B') {
+        usernameParagraph.style.color = '#C26883';
+    } else if (senderColor === '#8F0081') {
+        usernameParagraph.style.color = '#C84CB6';
     } else {
         usernameParagraph.style.color = senderColor;
     }
+    usernameParagraph.addEventListener('click', onClickUsername);
     usernameParagraph.classList.add('username');
 
     let messageSeperator = document.createElement('span');
@@ -39,11 +52,21 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
     messageParagraph.classList.add('message-text');
     if (messageIsAction) {
         if (senderColor == null || senderColor === '') {
-            messageParagraph.style.color = '#ff0000';
-        } else if (senderColor === '#b22222') {
-            messageParagraph.style.color = '#db4a3f';
-        } else if (senderColor === '#8a2be2') {
-            messageParagraph.style.color = '#b454ff';
+            messageParagraph.style.color = '#FF0000';
+        } else if (senderColor === '#B22222') {
+            messageParagraph.style.color = '#DB4A3F';
+        } else if (senderColor === '#8A2BE2') {
+            messageParagraph.style.color = '#B454FF';
+        } else if (senderColor === '#B60606') {
+            messageParagraph.style.color = '#EF4B31';
+        } else if (senderColor === '#B31919') {
+            messageParagraph.style.color = '#EC5241';
+        } else if (senderColor === '#0000FF') {
+            messageParagraph.style.color = '#8B58FF';
+        } else if (senderColor === '#5A032B') {
+            messageParagraph.style.color = '#C26883';
+        } else if (senderColor === '#8F0081') {
+            messageParagraph.style.color = '#C84CB6';
         } else {
             messageParagraph.style.color = senderColor;
         }
@@ -311,4 +334,13 @@ function banUser(clickEvent) {
     let messageElement = clickEvent.srcElement.parentNode.parentNode;
 
     window.chatClient.timeoutUser(messageElement.getAttribute('channel'), messageElement.getAttribute('username'), duration);
+}
+
+function onClickUsername(event) {
+    let user = event.srcElement.innerText;
+    let messageInput = event.srcElement.parentNode.parentNode.parentNode.parentNode.querySelector('input.widget-chat-message-input');
+
+    messageInput.value += `@${user} `;
+    messageInput.focus()
+    messageInput.scrollIntoView(false);
 }
