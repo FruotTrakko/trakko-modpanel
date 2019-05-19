@@ -1,26 +1,15 @@
-function test(){
-    const messageBox = document.querySelector('div.message-box');
-    constructMessageContainer(messageBox, 'Trakko', '#ff2304', randomString(100), new Map().set('moderator', '1'), false, '#fruottrakko', Date.now().toString(10));
-}
-
-function randomString(length){
-    let str = '';
-    for(let i = 0; i <= length; i++){
-        str += String.fromCharCode(Math.random() * 26 + 97);
-        str += (Math.random() < .2 ? ' ' : '');
-    }
-    return str;
-}
-
-function constructMessageContainer(parentElement, senderName, senderColor, senderMessage, 
-    senderBadges, messageIsAction, targetChannel, timestamp, self){
+function constructMessageContainer(parentElement, senderName, senderColor, senderMessage,
+    senderBadges, messageIsAction, targetChannel, timestamp, self, messageId) {
     let messageDiv = document.createElement('div');
     messageDiv.classList.add('message');
-    if(self){
+    if (self) {
         messageDiv.classList.add('message-self');
     }
+    messageDiv.setAttribute('id', messageId);
+    messageDiv.setAttribute('channel', targetChannel);
+    messageDiv.setAttribute('username', senderName);
 
-    if(senderBadges !== ''){
+    if (senderBadges !== '') {
         var badgeSpan = document.createElement('span');
         badgeSpan.classList.add('badge-container');
 
@@ -29,32 +18,55 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
 
     let usernameParagraph = document.createElement('span');
     usernameParagraph.innerText = senderName;
-    if(senderColor == null || senderColor === ''){
+    if (senderColor == null || senderColor === '') {
         usernameParagraph.style.color = '#ffffff';
-    } else if(senderColor === '#0000FF' || senderColor === "#454545" || senderColor === '#6620fe'){
-        usernameParagraph.style.color = '#9f54ff';
+    } else if (senderColor === '#B22222') {
+        usernameParagraph.style.color = '#DB4A3F';
+    } else if (senderColor === '#8A2BE2') {
+        usernameParagraph.style.color = '#B454FF';
+    } else if (senderColor === '#B60606') {
+        usernameParagraph.style.color = '#EF4B31';
+    } else if (senderColor === '#B31919') {
+        usernameParagraph.style.color = '#EC5241';
+    } else if (senderColor === '#0000FF') {
+        usernameParagraph.style.color = '#8B58FF';
+    } else if (senderColor === '#5A032B') {
+        usernameParagraph.style.color = '#C26883';
+    } else if (senderColor === '#8F0081') {
+        usernameParagraph.style.color = '#C84CB6';
     } else {
         usernameParagraph.style.color = senderColor;
     }
+    usernameParagraph.addEventListener('click', onClickUsername);
     usernameParagraph.classList.add('username');
 
     let messageSeperator = document.createElement('span');
-    if(!messageIsAction){
+    if (!messageIsAction) {
         messageSeperator.innerText = ': ';
     } else {
         messageSeperator.innerText = ' ';
     }
-    messageSeperator.classList.add('message-text');
+    messageSeperator.classList.add('message-seperator');
 
     let messageParagraph = document.createElement('span');
     messageParagraph.classList.add('message-text');
-    if(messageIsAction){
-        if(senderColor == null || senderColor === ''){
-            messageParagraph.style.color = '#ff0000';
-        } else if(senderColor === '#b22222'){
-            messageParagraph.style.color = '#db4a3f';
-        } else if(senderColor === '#8a2be2'){
-            messageParagraph.style.color = '#b454ff';
+    if (messageIsAction) {
+        if (senderColor == null || senderColor === '') {
+            messageParagraph.style.color = '#FF0000';
+        } else if (senderColor === '#B22222') {
+            messageParagraph.style.color = '#DB4A3F';
+        } else if (senderColor === '#8A2BE2') {
+            messageParagraph.style.color = '#B454FF';
+        } else if (senderColor === '#B60606') {
+            messageParagraph.style.color = '#EF4B31';
+        } else if (senderColor === '#B31919') {
+            messageParagraph.style.color = '#EC5241';
+        } else if (senderColor === '#0000FF') {
+            messageParagraph.style.color = '#8B58FF';
+        } else if (senderColor === '#5A032B') {
+            messageParagraph.style.color = '#C26883';
+        } else if (senderColor === '#8F0081') {
+            messageParagraph.style.color = '#C84CB6';
         } else {
             messageParagraph.style.color = senderColor;
         }
@@ -69,37 +81,54 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
     deletedParagraph.setAttribute('name', 'deleted-text');
     deletedParagraph.classList.add('deleted-text');
 
+    let endContainer = document.createElement('div');
+    endContainer.classList.add('end-container');
+
+    let deleteText = document.createElement('p');
+    deleteText.classList.add('delete-text');
+    deleteText.innerText = 'delete';
+    deleteText.onclick = deleteMessage;
+
+    let timeoutText = document.createElement('p');
+    timeoutText.classList.add('timeout-text');
+    timeoutText.innerText = 'timeout';
+    timeoutText.onclick = banUser;
+
     let timestampAndChannelParagraph = document.createElement('span');
     let timeObject = new Date(parseInt(timestamp, 10));
-    
+
     timestampAndChannelParagraph.innerText = `${targetChannel} @ ${timeObject.getHours()}:${timeObject.getMinutes()}:${timeObject.getSeconds()} - ${timeObject.getDate()}.${timeObject.getMonth() + 1}.${timeObject.getFullYear()}`;
     timestampAndChannelParagraph.classList.add('timestamp');
 
-    if(senderBadges !== ''){
+    endContainer.appendChild(deleteText);
+    endContainer.appendChild(timeoutText);
+    endContainer.appendChild(timestampAndChannelParagraph);
+
+    if (senderBadges !== '') {
         messageDiv.appendChild(badgeSpan);
     }
     messageDiv.appendChild(usernameParagraph);
     messageDiv.appendChild(messageSeperator);
     messageDiv.appendChild(messageParagraph);
     messageDiv.appendChild(deletedParagraph);
-    messageDiv.appendChild(timestampAndChannelParagraph);
+    messageDiv.appendChild(endContainer);
 
-    let scroll = parentElement.clientHeight + parentElement.scrollTop - 2 <= parentElement.scrollHeight 
-                && parentElement.clientHeight + parentElement.scrollTop + 2 >= parentElement.scrollHeight;
+    let scroll = parentElement.clientHeight + parentElement.scrollTop - 2 <= parentElement.scrollHeight
+        && parentElement.clientHeight + parentElement.scrollTop + 2 >= parentElement.scrollHeight;
     console.log(parentElement.clientHeight + parentElement.scrollTop);
     console.log(parentElement.scrollHeight);
     console.log(scroll);
 
     parentElement.appendChild(messageDiv);
 
-    if(scroll){
+    if (scroll) {
         parentElement.scrollTop = parentElement.scrollHeight;
     }
 
     checkMessageCount(parentElement);
 }
 
-function constructBadgeContainer(badges, parentElement, channel){
+function constructBadgeContainer(badges, parentElement, channel) {
     var channelBadgeObject = JSON.parse(sessionStorage.getItem(`${channel.substr(1)}-badges`));
     var globalBadgeObject = JSON.parse(sessionStorage.getItem('global-badges'));
 
@@ -108,8 +137,8 @@ function constructBadgeContainer(badges, parentElement, channel){
         let badgeElement = document.createElement('img');
 
         badgeElement.classList.add('badge');
-        
-        if(!channelBadgeObject) {
+
+        if (!channelBadgeObject) {
             showError('Error', 'Couldn\'t load channel badges');
             return;
         }
@@ -126,8 +155,8 @@ function constructBadgeContainer(badges, parentElement, channel){
     });
 }
 
-function highlightPings(senderMessage, messageParagraph){
-    if(senderMessage.toLowerCase().match(`@${window.chatClient.username.toLowerCase()}`)){
+function highlightPings(senderMessage, messageParagraph) {
+    if (senderMessage.toLowerCase().match(`@${window.chatClient.username.toLowerCase()}`)) {
         let nameParagraph = document.createElement('span');
         nameParagraph.innerText = senderMessage.slice(senderMessage.indexOf('@'), senderMessage.indexOf('@') + 1 + window.chatClient.username.length);
         nameParagraph.classList.add('message-username-ping');
@@ -145,30 +174,30 @@ function highlightPings(senderMessage, messageParagraph){
     }
 }
 
-function checkMessageCount(parentElement){
+function checkMessageCount(parentElement) {
     let messages = parentElement.childElementCount;
-    if(messages >= 100){
-        clearMessages(parentElement, messages-90);
-        console.log(`Cleaned up and cleared ${messages-90} messages!`);
+    if (messages >= 100) {
+        clearMessages(parentElement, messages - 90);
+        console.log(`Cleaned up and cleared ${messages - 90} messages!`);
     }
 }
 
-function clearAllMessages(parentElement){
+function clearAllMessages(parentElement) {
     clearMessages(parentElement, parentElement.childElementCount);
 }
 
-function clearMessages(parentElement, count){
-    for(let i = 1; i <= count; i++){
+function clearMessages(parentElement, count) {
+    for (let i = 1; i <= count; i++) {
         parentElement.firstElementChild.remove();
     }
-    if(count > 10){
+    if (count > 10) {
         showInformation('Clear', `Cleared ${count} messages!`);
     }
 }
 
-function closeNotificationbar(event, isNotEvent){
+function closeNotificationbar(event, isNotEvent) {
     let barElement;
-    if(!isNotEvent){
+    if (!isNotEvent) {
         barElement = event.srcElement.parentNode.parentNode.parentNode;
     } else {
         barElement = event;
@@ -180,12 +209,12 @@ function closeNotificationbar(event, isNotEvent){
     barElement.classList.add('run-up');
     setTimeout(() => {
         barElement.remove();
-    },1000);
+    }, 1000);
 }
 
 let timeouts = [];
 
-function showNotificationbar(title, detail, color){
+function showNotificationbar(title, detail, color) {
     let parentElement = document.querySelector('div.notifications');
     let notificationbar = createNotificationbar(parentElement, title, detail, color);
     notificationbar.classList.add('run-down');
@@ -198,7 +227,7 @@ function showNotificationbar(title, detail, color){
     notificationbar.setAttribute('id', index);
 }
 
-function createNotificationbar(parentElement, title, detail, color){
+function createNotificationbar(parentElement, title, detail, color) {
     let notificationbarDiv = document.createElement('div');
     notificationbarDiv.style.backgroundColor = color;
     notificationbarDiv.classList.add('notificationbar');
@@ -233,183 +262,85 @@ function createNotificationbar(parentElement, title, detail, color){
     return notificationbarDiv;
 }
 
-function showError(title, detail){
+function showError(title, detail) {
     showNotificationbar(title, detail, 'rgb(240, 94, 94)');
 }
 
-function showWarning(title, detail){
+function showWarning(title, detail) {
     showNotificationbar(title, detail, 'rgb(238, 169, 43)');
 }
 
-function showInformation(title, detail){
+function showInformation(title, detail) {
     showNotificationbar(title, detail, 'rgb(84, 195, 48)');
 }
 
-function bindChannel(){
-    let channel = document.querySelector('input.channel-name').value;
-    if(channel === '#' || channel === ''){
-        showError('Error', 'The channel name must be at least one character long');
-        return;
-    }
-    window.chatClient.joinChannel(channel);
-    cacheChannelBadges(channel, `${channel.substr(1)}-badges`);
-
-    document.querySelector('input.channel-name').value = '#';
-    let parentElement = document.querySelector('div.channel-container');
-    let channelDiv = document.createElement('div');
-    channelDiv.addEventListener('click', selectChannel);
-    channelDiv.setAttribute('name', channel);
-    channelDiv.classList.add('channel');
-
-    let channelParagraph = document.createElement('p');
-    channelParagraph.innerText = channel;
-    channelParagraph.classList.add('channel-name');
-    channelParagraph.classList.add('heading');
-    let channelStatus = document.createElement('p');
-    channelStatus.classList.add('channel-status');
-    channelStatus.classList.add('heading');
-    let channelLeaver = document.createElement('p');
-    channelLeaver.innerText = 'X';
-    channelLeaver.addEventListener('click', unbindChannel)
-    channelLeaver.classList.add('channel-leaver');
-
-    var selectedChannel = getSelectedChannel();
-    console.log(selectedChannel);
-    if(!selectedChannel){
-        channelDiv.classList.add('channel-selected');
-    }
-
-    channelDiv.appendChild(channelParagraph);
-    channelDiv.appendChild(channelStatus);
-    channelDiv.appendChild(channelLeaver);
-
-    parentElement.appendChild(channelDiv);
-
-    checkStreams();
-}
-
-function unbindChannel(event){
-    let channel = event.srcElement.parentNode.getAttribute('name');
-    if(channel === '#' || channel === ''){
-        showError('Error', 'The channel name must be at least one character long');
-        return;
-    }
-    window.chatClient.leaveChannel(channel);
-
-    let parentElement = document.querySelector('div.channel-container');
-    parentElement.removeChild(parentElement.children.namedItem(channel));
-}
-
-function getSelectedChannel(){
-    let channelParent = document.querySelector('div.channel-container');
-    for(let child of channelParent.childNodes){
-        if(isSelectedChannel(child)){
-            return child;
-        }
-    }
-}
-
-function isSelectedChannel(channel){
-    return channel.classList.contains('channel-selected');
-}
-
-function selectChannel(event){
-    var channel;
-    if(event.srcElement.tagName !== 'DIV'){
-        if(event.srcElement.classList.contains('channel-leaver')){
-            return;
-        }
-        channel = event.srcElement.parentNode;
-    } else {
-        channel = event.srcElement;
-    }
-    for(let child of channel.parentNode.childNodes){
-        child.classList.remove('channel-selected');
-    }
-    channel.classList.add('channel-selected');
-
-    let messageInput = document.querySelector('input.message-input');
-    messageInput.placeholder = `Type your message here! - ${getSelectedChannel().getAttribute('name').toUpperCase()}`;
-}
-
-function checkNotEmpty(event){
+function checkNotEmpty(event) {
     let input = event.srcElement;
-    if(input.value === ''){
+    if (input.value === '') {
         input.value = '#'
         showWarning('Important', 'Channelname must start with a numbersign/hashtag!')
     }
 
-    if(event.keyCode == 13){
+    if (event.keyCode == 13) {
         bindChannel();
     }
 }
 
-function checkForEnter(event){
-    if(event.keyCode == 13){
+function checkForEnter(event) {
+    if (event.keyCode == 13) {
         sendMessage();
     }
 }
 
-function sendMessage(){
-    let messageInput = document.querySelector('input.message-input');
-    let message = messageInput.value;
-    messageInput.value = '';
-
-    let channel = getSelectedChannel().getAttribute('name');
-
-    console.log(message);
-    console.log(channel);
-
-    if(!channel){
-        if(window.chatClient.getChannels().length === 0){
-            showError('Error', 'Join a channel before trying to send a message!');
-            return;
-        }
-        showError('Error', 'You must select a channel to send a message to first!');
-        return;
-    }
-    if(!message){
-        showError('Error', 'The message to send must not be empty!');
-        return;
-    }
-
-    window.chatClient.sendMessage(channel, message);
-}
-
-function checkStreams(){
-    let channelContainer = document.querySelector('div.channel-container');
-    channelContainer.childNodes.forEach((child) => {
-        let streamerName = child.getAttribute('name').slice(1);
-        checkStreamStatus(streamerName)
+function checkStreamStatus(streamName) {
+    return Promise.resolve(sendRequest(`https://api.twitch.tv/helix/streams?user_login=${streamName}`, false))
         .then((res) => {
-            let statusElement = child.childNodes[1];
-            if(res){
-                statusElement.innerText = 'STREAMING';
-                statusElement.classList.remove('orange-text');
-                statusElement.classList.add('purple-text');
+            if (res === '{"data":[],"pagination":{}}') {
+                return false;
             } else {
-                statusElement.innerText = 'OFFLINE';
-                statusElement.classList.remove('purple-text');
-                statusElement.classList.add('orange-text');
+                return true;
             }
         });
-    });
 }
 
-function checkStreamStatus(streamName){
-    return Promise.resolve(sendRequest(`https://api.twitch.tv/helix/streams?user_login=${streamName}`, false))
-    .then((res) => {
-        if(res === '{"data":[],"pagination":{}}'){
-            return false;
-        } else {
-            return true;
-        }
-    });
-}
-
-function markDeleted(message){
+function markDeleted(message) {
     message.classList.add('deleted');
     let deletedText = message.children.namedItem('deleted-text');
     deletedText.innerText = '<deleted>';
     deletedText.classList.add('deleted-text');
+}
+
+function redirect(location) {
+    switch (location) {
+        case 'contact':
+            document.location.href = `${document.location.origin}/contact`;
+            break;
+    }
+}
+
+function deleteMessage(clickEvent) {
+    let messageElement = clickEvent.srcElement.parentNode.parentNode;
+
+    if (messageElement.id === null) {
+        return;
+    }
+
+    window.chatClient.clearMessage(messageElement.getAttribute('channel'), messageElement.id);
+}
+
+function banUser(clickEvent) {
+    //TODO CHANGE TO CUSTOM POPUP MASK
+    let duration = prompt('Ban duration and corresponding unit [s,m,h,d,w]', '');
+    let messageElement = clickEvent.srcElement.parentNode.parentNode;
+
+    window.chatClient.timeoutUser(messageElement.getAttribute('channel'), messageElement.getAttribute('username'), duration);
+}
+
+function onClickUsername(event) {
+    let user = event.srcElement.innerText;
+    let messageInput = event.srcElement.parentNode.parentNode.parentNode.parentNode.querySelector('input.widget-chat-message-input');
+
+    messageInput.value += `@${user} `;
+    messageInput.focus()
+    messageInput.scrollIntoView(false);
 }
