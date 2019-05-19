@@ -18,7 +18,7 @@ function credentialsPresent() {
 }
 
 function initAuth(){
-    let authEndpoint = 'https://id.twitch.tv/oauth2/authorize?client_id=oh2pvwrn4l1cirpbcz8ec60lsfan60&redirect_uri=https://twitch-modpanel.herokuapp.com/auth&response_type=token&scope=chat:read+chat:edit+channel:moderate+user_read';
+    let authEndpoint = 'https://id.twitch.tv/oauth2/authorize?client_id=oh2pvwrn4l1cirpbcz8ec60lsfan60&redirect_uri=https://trakko-modpanel.herokuapp.com/auth&response_type=token&scope=chat:read+chat:edit+channel:moderate+user_read';
     document.location.href = authEndpoint;
 }
 
