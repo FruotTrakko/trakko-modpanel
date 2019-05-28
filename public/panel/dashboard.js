@@ -15,6 +15,12 @@ class Dashboard {
         this.columns = [];
         this.widgets = [];
 
+        let standardWidgets = [
+            ["Chat Widget", ChatWidget]
+        ];
+
+        this.availableWidgets = new Map(standardWidgets);
+
         this.parentElement.classList.add('dashboard-main');
 
         for (let i = 0; i < columnWidths.length; i++) {
@@ -44,6 +50,14 @@ class Dashboard {
 
     removeWidget(widget) {
         this.widgets.splice(this.widgets.indexOf(widget), 1);
+    }
+
+    getAvailableWidgets() {
+        return this.availableWidgets;
+    }
+
+    registerWidgetType(name, classObject) {
+        this.availableWidgets.set(name, classObject);
     }
 
     updateDashboard() {

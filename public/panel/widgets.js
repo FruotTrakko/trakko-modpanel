@@ -24,6 +24,7 @@ class NewWidget extends Widget {
 
         let addIconWrapper = document.createElement('div');
         addIconWrapper.classList.add('widget-new-icon-wrapper');
+        addIconWrapper.onclick = this.onClickNew.bind(this);
 
         let addIcon = document.createElement('span');
         addIcon.classList.add('widget-icon', 'fa-stack');
@@ -40,6 +41,91 @@ class NewWidget extends Widget {
 
         this.contentElement.appendChild(addIconWrapper);
         this.contentElement.classList.add('widget-new-content');
+
+        let selectionDiv = document.createElement('div');
+        selectionDiv.classList.add('widget-new-selection-container', 'widget-hidden', 'widget-container');
+        this.selection = selectionDiv;
+
+        let selectionHeader = document.createElement('h3');
+        selectionHeader.classList.add('widget-new-selection-header', 'heading');
+        selectionHeader.innerText = 'ADD NEW WIDGET';
+        let selectionSearchbox = document.createElement('input');
+        selectionSearchbox.classList.add('widget-new-selection-searchbox');
+        selectionSearchbox.type = 'text';
+        selectionSearchbox.onkeyup = this.updateSearch.bind(this);
+
+        let resultDiv = document.createElement('div');
+        resultDiv.classList.add('widget-new-selection-results');
+        this.resultContainer = resultDiv;
+
+        selectionDiv.appendChild(selectionHeader);
+        selectionDiv.appendChild(selectionSearchbox);
+        selectionDiv.appendChild(resultDiv);
+
+        this.contentElement.appendChild(selectionDiv);
+    }
+
+    onClickNew(clickEvent) {
+        console.log(clickEvent);
+        this.toggleSelection();
+    }
+
+    toggleSelection() {
+        this.selection.classList.toggle('widget-hidden');
+
+        if (!this.selection.classList.contains('widget-hidden')) {
+            this.updateSearch();
+        }
+    }
+
+    updateSearch(keyEvent) {
+        console.log('Lul');
+        let searchString = "";
+        if (keyEvent) {
+            searchString = keyEvent.srcElement.value;
+        }
+
+        let oldElements = this.resultContainer.childElementCount;
+
+        for (let i = 0; i < oldElements; i++) {
+            this.resultContainer.firstElementChild.remove();
+        }
+
+        let widgets = window.dashboard.getAvailableWidgets();
+
+        //TODO Implment search
+
+        widgets.forEach((value, key) => {
+            let resultDiv = document.createElement('div');
+            resultDiv.classList.add('widget-new-selection-result');
+            resultDiv.onclick = this.onSelect.bind(this);
+
+            let plus = document.createElement('i');
+            plus.classList.add('widget-icon-part', 'fas', 'fa-plus');
+
+            let nameParagraph = document.createElement('p');
+            nameParagraph.classList.add('widget-new-selection-name');
+            nameParagraph.innerText = key;
+
+            resultDiv.appendChild(plus);
+            resultDiv.appendChild(nameParagraph);
+
+            this.resultContainer.appendChild(resultDiv);
+        });
+    }
+
+    onSelect(mouseEvent) {
+        console.log(mouseEvent);
+        let widgetKey = mouseEvent.srcElement.innerText;
+
+        console.log(window.dashboard.getAvailableWidgets().get(widgetKey));
+        let argumentArray = [
+            this.columnElement
+        ];
+
+        Reflect.construct(window.dashboard.getAvailableWidgets().get(widgetKey), argumentArray);
+
+        this.toggleSelection();
     }
 }
 
@@ -347,7 +433,7 @@ class ChatWidget extends Widget {
                 return;
             }
             this.messageBox.childNodes.forEach((child) => {
-                if(child.id == message.tags.targetMsgId) {
+                if (child.id == message.tags.targetMsgId) {
                     markDeleted(child);
                 }
             });
