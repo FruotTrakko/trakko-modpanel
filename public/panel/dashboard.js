@@ -9,9 +9,11 @@ class Dashboard {
         this.createDashboard(parentElement, cols, widths);
     }
 
-    createDashboard(parentElement, cols, columnWidths) {
+    createDashboard(parentElement, cols, columnWidths, evenColums) {
         this.parentElement = parentElement;
         this.cols = cols;
+        this.columnWidths = columnWidths;
+        this.evenColums = evenColums === null || evenColums === undefined ? true : evenColums;
         this.columns = [];
         this.widgets = [];
 
@@ -24,7 +26,7 @@ class Dashboard {
         this.parentElement.classList.add('dashboard-main');
 
         for (let i = 0; i < columnWidths.length; i++) {
-            this.columns[i] = new Column(this.parentElement, columnWidths[i], this);
+            this.columns[i] = new Column(this.parentElement, this.columnWidths[i], this);
         }
     }
 
@@ -61,7 +63,40 @@ class Dashboard {
     }
 
     updateDashboard() {
-        //TODO IMPLEMENT METHOD
+        if (this.columns.length > this.cols) {
+            for (let i = this.columns.length; i > this.cols; i--) {
+                this.columns[i - 1].column.remove();
+                this.columns.pop();
+            }
+
+        } else if (this.columns.length < this.cols) {
+            for (let i = this.columns.length; i < this.cols; i++) {
+                this.columns[i] = new Column(this.parentElement, this.columnWidths[i], this);
+            }
+
+        }
+
+        if (this.evenColums) {
+            this.columnWidths = this.getEvenColumnWidths(this.cols);
+        }
+
+        for (let i = 0; i < this.columns.length; i++) {
+            this.columns[i].updateWidth(this.columnWidths[i]);
+        }
+    }
+
+    getEvenColumnWidths(cols) {
+        let widths = []
+        for (let i = 0; i < cols; i++) {
+            widths[i] = 100 / cols;
+        }
+        return widths;
+    }
+
+    setColumnMode(even) {
+        this.evenColums = even;
+
+        this.updateDashboard();
     }
 
     onMessage(message) {
@@ -86,6 +121,11 @@ class Column {
         this.parentElement.appendChild(columnDiv);
 
         this.newWidget = new NewWidget(this.column, dashboard);
+    }
+
+    updateWidth(width) {
+        this.column.style.width = `${width}%`;
+        this.width = width;
     }
 }
 

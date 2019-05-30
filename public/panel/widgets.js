@@ -11,28 +11,25 @@ class TempWidget extends Widget {
     }
 }
 
-/**
- *  Not fully implemented. Missing adding capability. A modal window should appear with a dropdown of possible widgets.
- */
 class NewWidget extends Widget {
 
     constructor(columnElement, dashboard) {
         super(columnElement, '', dashboard);
 
         this.widget.querySelector('.widget-handle').remove();
-        this.widget.classList.add('widget-new-container');
+        this.widget.classList.add('widget-new-container', 'widget-new');
 
         let addIconWrapper = document.createElement('div');
-        addIconWrapper.classList.add('widget-new-icon-wrapper');
+        addIconWrapper.classList.add('widget-new-icon-wrapper', 'widget-new');
         addIconWrapper.onclick = this.onClickNew.bind(this);
 
         let addIcon = document.createElement('span');
-        addIcon.classList.add('widget-icon', 'fa-stack');
+        addIcon.classList.add('widget-icon', 'widget-new', 'fa-stack');
 
         let plus = document.createElement('i');
-        plus.classList.add('widget-icon-part', 'fas', 'fa-plus', 'fa-stack-1x')
+        plus.classList.add('widget-icon-part', 'widget-new', 'fas', 'fa-plus', 'fa-stack-1x')
         let circle = document.createElement('i');
-        circle.classList.add('widget-icon-part', 'far', 'fa-circle', 'fa-stack-2x')
+        circle.classList.add('widget-icon-part', 'widget-new', 'far', 'fa-circle', 'fa-stack-2x')
 
         addIcon.appendChild(plus);
         addIcon.appendChild(circle);
@@ -40,22 +37,24 @@ class NewWidget extends Widget {
         addIconWrapper.appendChild(addIcon);
 
         this.contentElement.appendChild(addIconWrapper);
-        this.contentElement.classList.add('widget-new-content');
+        this.contentElement.classList.add('widget-new-content', 'widget-new');
 
         let selectionDiv = document.createElement('div');
-        selectionDiv.classList.add('widget-new-selection-container', 'widget-hidden', 'widget-container');
+        selectionDiv.classList.add('widget-new-selection-container', 'widget-hidden', 'widget-container', 'widget-new');
         this.selection = selectionDiv;
 
         let selectionHeader = document.createElement('h3');
-        selectionHeader.classList.add('widget-new-selection-header', 'heading');
+        selectionHeader.classList.add('widget-new-selection-header', 'widget-new', 'heading');
         selectionHeader.innerText = 'ADD NEW WIDGET';
         let selectionSearchbox = document.createElement('input');
-        selectionSearchbox.classList.add('widget-new-selection-searchbox');
+        selectionSearchbox.classList.add('widget-new-selection-searchbox', 'widget-new');
         selectionSearchbox.type = 'text';
+        selectionSearchbox.placeholder = 'Search Widget';
         selectionSearchbox.onkeyup = this.updateSearch.bind(this);
+        this.search = selectionSearchbox;
 
         let resultDiv = document.createElement('div');
-        resultDiv.classList.add('widget-new-selection-results');
+        resultDiv.classList.add('widget-new-selection-results', 'widget-new');
         this.resultContainer = resultDiv;
 
         selectionDiv.appendChild(selectionHeader);
@@ -66,7 +65,6 @@ class NewWidget extends Widget {
     }
 
     onClickNew(clickEvent) {
-        console.log(clickEvent);
         this.toggleSelection();
     }
 
@@ -75,14 +73,17 @@ class NewWidget extends Widget {
 
         if (!this.selection.classList.contains('widget-hidden')) {
             this.updateSearch();
+            this.search.focus();
+            window.onclick = this.onWindowClick.bind(this);
+        } else {
+            window.onclick = '';
         }
     }
 
     updateSearch(keyEvent) {
-        console.log('Lul');
         let searchString = "";
         if (keyEvent) {
-            searchString = keyEvent.srcElement.value;
+            searchString = keyEvent.srcElement.value.toUpperCase();
         }
 
         let oldElements = this.resultContainer.childElementCount;
@@ -91,20 +92,24 @@ class NewWidget extends Widget {
             this.resultContainer.firstElementChild.remove();
         }
 
-        let widgets = window.dashboard.getAvailableWidgets();
+        let widgets = new Map(window.dashboard.getAvailableWidgets());
 
-        //TODO Implment search
+        for (let widget of widgets.keys()) {
+            if (!widget.toUpperCase().includes(searchString)) {
+                widgets.delete(widget);
+            }
+        }
 
         widgets.forEach((value, key) => {
             let resultDiv = document.createElement('div');
-            resultDiv.classList.add('widget-new-selection-result');
+            resultDiv.classList.add('widget-new-selection-result', 'widget-new');
             resultDiv.onclick = this.onSelect.bind(this);
 
             let plus = document.createElement('i');
-            plus.classList.add('widget-icon-part', 'fas', 'fa-plus');
+            plus.classList.add('widget-icon-part', 'widget-new', 'fas', 'fa-plus');
 
             let nameParagraph = document.createElement('p');
-            nameParagraph.classList.add('widget-new-selection-name');
+            nameParagraph.classList.add('widget-new-selection-name', 'widget-new');
             nameParagraph.innerText = key;
 
             resultDiv.appendChild(plus);
@@ -115,10 +120,7 @@ class NewWidget extends Widget {
     }
 
     onSelect(mouseEvent) {
-        console.log(mouseEvent);
         let widgetKey = mouseEvent.srcElement.innerText;
-
-        console.log(window.dashboard.getAvailableWidgets().get(widgetKey));
         let argumentArray = [
             this.columnElement
         ];
@@ -126,6 +128,12 @@ class NewWidget extends Widget {
         Reflect.construct(window.dashboard.getAvailableWidgets().get(widgetKey), argumentArray);
 
         this.toggleSelection();
+    }
+
+    onWindowClick(mouseEvent) {
+        if (!mouseEvent.srcElement.classList.contains('widget-new')) {
+            this.toggleSelection();
+        }
     }
 }
 

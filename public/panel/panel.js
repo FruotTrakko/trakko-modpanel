@@ -34,6 +34,10 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
         usernameParagraph.style.color = '#C26883';
     } else if (senderColor === '#8F0081') {
         usernameParagraph.style.color = '#C84CB6';
+    } else if (senderColor === '#3E0101') {
+        usernameParagraph.style.color = '#B0696B';
+    } else if (senderColor === '#8B00CC') {
+        usernameParagraph.style.color = '#BF49FF';
     } else {
         usernameParagraph.style.color = senderColor;
     }
@@ -67,6 +71,10 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
             messageParagraph.style.color = '#C26883';
         } else if (senderColor === '#8F0081') {
             messageParagraph.style.color = '#C84CB6';
+        } else if (senderColor === '#3E0101') {
+            messageParagraph.style.color = '#B0696B';
+        } else if (senderColor === '#8B00CC') {
+            messageParagraph.style.color = '#BF49FF';
         } else {
             messageParagraph.style.color = senderColor;
         }
@@ -113,8 +121,8 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
     messageDiv.appendChild(deletedParagraph);
     messageDiv.appendChild(endContainer);
 
-    let scroll = parentElement.clientHeight + parentElement.scrollTop - 2 <= parentElement.scrollHeight
-        && parentElement.clientHeight + parentElement.scrollTop + 2 >= parentElement.scrollHeight;
+    let scroll = parentElement.clientHeight + parentElement.scrollTop - 100 <= parentElement.scrollHeight
+        && parentElement.clientHeight + parentElement.scrollTop + 100 >= parentElement.scrollHeight;
     console.log(parentElement.clientHeight + parentElement.scrollTop);
     console.log(parentElement.scrollHeight);
     console.log(scroll);
@@ -305,9 +313,23 @@ function checkStreamStatus(streamName) {
 
 function markDeleted(message) {
     message.classList.add('deleted');
+
+    let scroll = message.parentNode.clientHeight + message.parentNode.scrollTop - 2 <= message.parentNode.scrollHeight
+        && message.parentNode.clientHeight + message.parentNode.scrollTop + 2 >= message.parentNode.scrollHeight;
+
+    console.log('DELETED:');
+    console.log(message.parentNode.clientHeight + message.parentNode.scrollTop);
+    console.log(message.parentNode.scrollHeight);
+    console.log(scroll);
+
     let deletedText = message.children.namedItem('deleted-text');
     deletedText.innerText = '<deleted>';
     deletedText.classList.add('deleted-text');
+
+
+    if (scroll) {
+        message.parentNode.scrollTop = message.parentNode.scrollHeight;
+    }
 }
 
 function redirect(location) {

@@ -8,4 +8,4 @@ onPageLoad();
 
 new ChatWidget(window.dashboard.getColumn(0).column);
 
-cacheBadges('https://badges.twitch.tv/v1/badges/global/display','global-badges');
+cacheBadges('https://badges.twitch.tv/v1/badges/global/display', 'global-badges');
