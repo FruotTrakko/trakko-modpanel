@@ -18,29 +18,7 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
 
     let usernameParagraph = document.createElement('span');
     usernameParagraph.innerText = senderName;
-    if (senderColor == null || senderColor === '') {
-        usernameParagraph.style.color = '#ffffff';
-    } else if (senderColor === '#B22222') {
-        usernameParagraph.style.color = '#DB4A3F';
-    } else if (senderColor === '#8A2BE2') {
-        usernameParagraph.style.color = '#B454FF';
-    } else if (senderColor === '#B60606') {
-        usernameParagraph.style.color = '#EF4B31';
-    } else if (senderColor === '#B31919') {
-        usernameParagraph.style.color = '#EC5241';
-    } else if (senderColor === '#0000FF') {
-        usernameParagraph.style.color = '#8B58FF';
-    } else if (senderColor === '#5A032B') {
-        usernameParagraph.style.color = '#C26883';
-    } else if (senderColor === '#8F0081') {
-        usernameParagraph.style.color = '#C84CB6';
-    } else if (senderColor === '#3E0101') {
-        usernameParagraph.style.color = '#B0696B';
-    } else if (senderColor === '#8B00CC') {
-        usernameParagraph.style.color = '#BF49FF';
-    } else {
-        usernameParagraph.style.color = senderColor;
-    }
+    usernameParagraph.style.color = translateColorToReadable(senderColor);
     usernameParagraph.addEventListener('click', onClickUsername);
     usernameParagraph.classList.add('username');
 
@@ -55,30 +33,7 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
     let messageParagraph = document.createElement('span');
     messageParagraph.classList.add('message-text');
     if (messageIsAction) {
-        if (senderColor == null || senderColor === '') {
-            messageParagraph.style.color = '#FF0000';
-        } else if (senderColor === '#B22222') {
-            messageParagraph.style.color = '#DB4A3F';
-        } else if (senderColor === '#8A2BE2') {
-            messageParagraph.style.color = '#B454FF';
-        } else if (senderColor === '#B60606') {
-            messageParagraph.style.color = '#EF4B31';
-        } else if (senderColor === '#B31919') {
-            messageParagraph.style.color = '#EC5241';
-        } else if (senderColor === '#0000FF') {
-            messageParagraph.style.color = '#8B58FF';
-        } else if (senderColor === '#5A032B') {
-            messageParagraph.style.color = '#C26883';
-        } else if (senderColor === '#8F0081') {
-            messageParagraph.style.color = '#C84CB6';
-        } else if (senderColor === '#3E0101') {
-            messageParagraph.style.color = '#B0696B';
-        } else if (senderColor === '#8B00CC') {
-            messageParagraph.style.color = '#BF49FF';
-        } else {
-            messageParagraph.style.color = senderColor;
-        }
-
+        messageParagraph.style.color = translateColorToReadable(senderColor);
         messageParagraph.innerText = senderMessage.slice(senderMessage.indexOf(' ') + 1, senderMessage.length - 3);
     } else {
         messageParagraph.innerText = senderMessage;
@@ -179,6 +134,36 @@ function highlightPings(senderMessage, messageParagraph) {
         messageParagraph.appendChild(messageBefore);
         messageParagraph.appendChild(nameParagraph);
         messageParagraph.appendChild(messageAfter);
+    }
+}
+
+function translateColorToReadable(color) {
+    switch (color) {
+        case null:
+        case '':
+            return '#1DC58D';
+        case '#B22222':
+            return '#DB4A3F';
+        case '#8A2BE2':
+            return '#B454FF';
+        case '#B60606':
+            return '#EF4B31';
+        case '#B31919':
+            return '#EC5241';
+        case '#0000FF':
+            return '#8B58FF';
+        case '#5A032B':
+            return '#C26883';
+        case '#8F0081':
+            return '#C84CB6';
+        case '#3E0101':
+            return '#B0696B';
+        case '#8B00CC':
+            return '#BF49FF';
+        case '#6620FE':
+            return '#9F54FF';
+        default:
+            return color;
     }
 }
 
