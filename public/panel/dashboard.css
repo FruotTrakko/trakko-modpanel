@@ -88,7 +88,7 @@
 .widget-new-selection-container {
     padding: .5em;
     position: absolute;
-    margin: 2.5em auto;
+    margin: 2.5em auto 0 auto;
     left: 0;
     right: 0;
     display: flex;
@@ -117,11 +117,16 @@
 
 .widget-new-selection-result:hover {
     background-color: rgba(177, 177, 177, 0.3);
+    outline: 1px solid rgb(0, 204, 0);
     cursor: pointer;
 }
 
 .widget-new-selection-name {
     margin: 0 0 0 .5em;
+}
+
+.widget-new-selection-selected {
+    background-color: rgba(177, 177, 177, 0.3);
 }
 
 .widget-status-container {

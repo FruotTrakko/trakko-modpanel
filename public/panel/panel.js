@@ -120,14 +120,16 @@ function constructBadgeContainer(badges, parentElement, channel) {
 
 function highlightPings(senderMessage, messageParagraph) {
     if (senderMessage.toLowerCase().match(`@${window.chatClient.username.toLowerCase()}`)) {
+        let nameIndex = senderMessage.toLowerCase().indexOf(`@${window.chatClient.username.toLowerCase()}`);
+
         let nameParagraph = document.createElement('span');
-        nameParagraph.innerText = senderMessage.slice(senderMessage.indexOf('@'), senderMessage.indexOf('@') + 1 + window.chatClient.username.length);
+        nameParagraph.innerText = senderMessage.slice(nameIndex, nameIndex + 1 + window.chatClient.username.length);
         nameParagraph.classList.add('message-username-ping');
         let messageBefore = document.createElement('span');
-        messageBefore.innerText = senderMessage.slice(0, senderMessage.indexOf('@'));
+        messageBefore.innerText = senderMessage.slice(0, nameIndex);
         messageBefore.classList.add('message-text');
         let messageAfter = document.createElement('span');
-        messageAfter.innerText = senderMessage.slice(senderMessage.indexOf('@') + 1 + window.chatClient.username.length);
+        messageAfter.innerText = senderMessage.slice(nameIndex + 1 + window.chatClient.username.length);
         messageAfter.classList.add('message-text');
 
         messageParagraph.innerText = '';
@@ -162,6 +164,8 @@ function translateColorToReadable(color) {
             return '#BF49FF';
         case '#6620FE':
             return '#9F54FF';
+        case '#484153':
+            return '#8C8398';
         default:
             return color;
     }
@@ -175,9 +179,9 @@ function checkMessageCount(parentElement) {
     }
 }
 
-function clearAllMessages(parentElement) {
-    clearMessages(parentElement, parentElement.childElementCount);
-}
+// function clearAllMessages(parentElement) {
+//     clearMessages(parentElement, parentElement.childElementCount);
+// }
 
 function clearMessages(parentElement, count) {
     for (let i = 1; i <= count; i++) {
@@ -267,23 +271,23 @@ function showInformation(title, detail) {
     showNotificationbar(title, detail, 'rgb(84, 195, 48)');
 }
 
-function checkNotEmpty(event) {
-    let input = event.srcElement;
-    if (input.value === '') {
-        input.value = '#'
-        showWarning('Important', 'Channelname must start with a numbersign/hashtag!')
-    }
+// function checkNotEmpty(event) {
+//     let input = event.srcElement;
+//     if (input.value === '') {
+//         input.value = '#'
+//         showWarning('Important', 'Channelname must start with a numbersign/hashtag!')
+//     }
 
-    if (event.keyCode == 13) {
-        bindChannel();
-    }
-}
+//     if (event.keyCode == 13) {
+//         bindChannel();
+//     }
+// }
 
-function checkForEnter(event) {
-    if (event.keyCode == 13) {
-        sendMessage();
-    }
-}
+// function checkForEnter(event) {
+//     if (event.keyCode == 13) {
+//         sendMessage();
+//     }
+// }
 
 function checkStreamStatus(streamName) {
     return Promise.resolve(sendRequest(`https://api.twitch.tv/helix/streams?user_login=${streamName}`, false))
@@ -323,6 +327,16 @@ function redirect(location) {
             document.location.href = `${document.location.origin}/contact`;
             break;
     }
+}
+
+function togglePanelEditmode() {
+    let settignsPane = document.querySelector('div.settings-pane');
+    if (settignsPane.style.width === '0vw') {
+        settignsPane.style.width = '25vw';
+    } else {
+        settignsPane.style.width = '0vw';
+    }
+    document.querySelector('div.settings-container').classList.toggle('hidden');
 }
 
 function deleteMessage(clickEvent) {

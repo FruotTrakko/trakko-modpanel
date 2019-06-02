@@ -19,6 +19,7 @@
     <script src="dashboard.js"></script>
     <script src="widgets.js"></script>
     <script src="util.js"></script>
+    <script src="settings.js"></script>
 
     <title>Trakko Modpanel</title>
 </head>
@@ -38,9 +39,6 @@
         <div class="container">
             <h3 class="heading title">WARNING</h3>
             <p class="heading detail">Javascript must be enabled to use this page!</p>
-            <div class="close" onclick="closeNotificationbar()">
-                <p class="close" onclick="closeNotificationbar()">[X]</p>
-            </div>
         </div>
     </div>
 
@@ -48,7 +46,21 @@
         <h3 class="heading">ALPHA MOCKUP VERSION - Not representative of final build!</h3>
     </div>
 
-    <div class="panel"></div>
+    <div class="inner-container">
+        <div class="panel"></div>
+
+        <div class="settings-pane" style="width: 25vw">
+            <div class="settings-container">
+                <div class="settings-option settings-option-evenmode">
+                    <p class="heading settings-label">Even Column Spacing:</p>
+                    <label class="switch settings-switch">
+                        <input type="checkbox" class="setting-evenmode" onclick="onChangeEvenmode()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="init.js"></script>
 </body>

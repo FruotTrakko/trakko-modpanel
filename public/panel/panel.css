@@ -47,7 +47,7 @@
 }
 
 .hidden {
-    display: none !important;
+   display: none !important;
 }
 
 .border {
@@ -110,8 +110,13 @@ div.notifications {
     z-index: 99;
 }
 
+div.inner-container {
+    display: flex;
+}
+
 div.panel {
     display: flex;
+    flex-grow: 1;
 }
 
 div.side-container {
@@ -314,4 +319,29 @@ input.channel-name {
 button.channel-join {
     float: right;
     margin: .25em auto;
+}
+
+.settings-pane {
+    height: 100vh;
+    background-color: rgb(46, 46, 46);
+    box-shadow: 0 0 0 1px rgba(80, 80, 80, 0.5);
+    transition: width .5s ease-in-out;
+}
+
+.settings-container {
+    margin: .25em;
+}
+
+.settings-option {
+    margin: .5em;
+    display: flex;
+}
+
+.settings-label {
+    align-self: center;
+}
+
+.settings-switch {
+    margin: 0 0 0 auto;
+    align-self: center;
 }

@@ -9,16 +9,20 @@ class Dashboard {
         this.createDashboard(parentElement, cols, widths);
     }
 
-    createDashboard(parentElement, cols, columnWidths, evenColums) {
+    createDashboard(parentElement, cols, columnWidths, evenColumns) {
         this.parentElement = parentElement;
         this.cols = cols;
         this.columnWidths = columnWidths;
-        this.evenColums = evenColums === null || evenColums === undefined ? true : evenColums;
+        this.evenColumns = evenColumns === null || evenColumns === undefined ? true : evenColumns;
         this.columns = [];
         this.widgets = [];
 
         let standardWidgets = [
-            ["Chat Widget", ChatWidget]
+            ["Test Widget", Widget],
+            ["Cool Widget", Widget],
+            ["Chat Widget", ChatWidget],
+            ["Speacial Thing", Widget],
+            ["Nice Chat", Widget]
         ];
 
         this.availableWidgets = new Map(standardWidgets);
@@ -76,7 +80,7 @@ class Dashboard {
 
         }
 
-        if (this.evenColums) {
+        if (this.evenColumns) {
             this.columnWidths = this.getEvenColumnWidths(this.cols);
         }
 
@@ -94,7 +98,7 @@ class Dashboard {
     }
 
     setColumnMode(even) {
-        this.evenColums = even;
+        this.evenColumns = even;
 
         this.updateDashboard();
     }

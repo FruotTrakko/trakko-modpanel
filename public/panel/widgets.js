@@ -77,12 +77,17 @@ class NewWidget extends Widget {
             window.onclick = this.onWindowClick.bind(this);
         } else {
             window.onclick = '';
+            this.search.value = '';
         }
     }
 
     updateSearch(keyEvent) {
         let searchString = "";
         if (keyEvent) {
+            if (keyEvent.keyCode == 13) {
+                this.onSelect({srcElement: this.resultContainer.firstElementChild});
+            }
+
             searchString = keyEvent.srcElement.value.toUpperCase();
         }
 
@@ -117,6 +122,8 @@ class NewWidget extends Widget {
 
             this.resultContainer.appendChild(resultDiv);
         });
+
+        this.resultContainer.firstElementChild.classList.add('widget-new-selection-selected');
     }
 
     onSelect(mouseEvent) {
