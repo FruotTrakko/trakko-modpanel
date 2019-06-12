@@ -5,6 +5,9 @@ function onPageLoad() {
             password: `oauth:${sessionStorage.getItem('authToken')}`
         });
         window.chatClient.open();
+
+        // sessionStorage.removeItem('authUser');
+        // sessionStorage.removeItem('authToken');
     } else {
         showWarning('Important', 'You have to login with your twitch account to use our service!');
 

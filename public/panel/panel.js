@@ -38,7 +38,12 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
     } else {
         messageParagraph.innerText = senderMessage;
     }
+    //TODO MAKE LEGACY
     highlightPings(senderMessage, messageParagraph);
+
+    window.highlightFilter.forEach((value, key) => {
+        highlight(messageParagraph, senderMessage, key, value.color, value.inverse, value.caseSensitive, value.regex);
+    });
 
     let deletedParagraph = document.createElement('p');
     deletedParagraph.setAttribute('name', 'deleted-text');
@@ -136,6 +141,55 @@ function highlightPings(senderMessage, messageParagraph) {
         messageParagraph.appendChild(messageBefore);
         messageParagraph.appendChild(nameParagraph);
         messageParagraph.appendChild(messageAfter);
+    }
+}
+
+function highlight(messageParagraph, message, highlightText, highlightColor, inverseColors, caseSensitive, isRegex) {
+    console.log(`Searching ${message} for ${highlightText} with params color ${highlightColor}, inverse ${inverseColors}, case sensitvity ${caseSensitive} and regex ${isRegex}`);
+
+    let regex = isRegex ? new RegExp(highlightText, 'g') : new RegExp(`${highlightText}`, `g${caseSensitive ? 'i' : ''}`);
+    let occurences = message.match(regex);
+    if (occurences === null) {
+        return;
+    }
+
+    let textElements = [];
+
+    console.log(message.indexOfRegex(regex));
+
+    textElements.push(message.slice(0, message.indexOfRegex(regex)));
+
+    let offset = 0;
+    textElements.push(message.slice(message.indexOfRegex(regex), message.indexOfRegex(regex) + highlightText.length));
+    offset = message.indexOfRegex(regex) + 1;
+
+    for (let i = 1; i < occurences.length; i++) {
+        textElements.push(message.slice(message.indexOfRegex(regex, offset - 1) + highlightText.length, message.indexOfRegex(regex, offset)));
+        textElements.push(message.slice(message.indexOfRegex(regex, offset), message.indexOfRegex(regex, offset) + highlightText.length));
+        offset = message.indexOfRegex(regex, offset) + 1;
+    }
+
+    textElements.push(message.slice(message.indexOfRegex(regex, offset - 1) + highlightText.length));
+
+    console.log(textElements);
+    
+    messageParagraph.innerText = '';
+    for (let element of textElements) {
+        let paragraph = document.createElement('span');
+        paragraph.innerText = element;
+
+        if (element.match(regex) !== null) {
+            if (!inverseColors) {
+                paragraph.style.backgroundColor = highlightColor;
+                paragraph.style.color = 'rgb(46, 46, 46)';
+            } else {
+                paragraph.style.backgroundColor = 'whitesmoke';
+                paragraph.style.color = highlightColor;
+                paragraph.style.fontWeight = 'bold';
+            }
+        }
+
+        messageParagraph.appendChild(paragraph);
     }
 }
 
@@ -364,4 +418,34 @@ function onClickUsername(event) {
     messageInput.value += `@${user} `;
     messageInput.focus()
     messageInput.scrollIntoView(false);
+}
+
+function promptCheck(action) {
+    return new Promise((resolve) => {
+        let prompt = document.querySelector('div.prompt-container');
+        prompt.classList.remove('hidden');
+
+        let title = prompt.querySelector('h3.prompt-title');
+        title.innerText = action.toUpperCase();
+
+        let yesButton = prompt.querySelector('button.prompt-button-yes');
+        yesButton.onclick = () => {
+            resolve(true);
+        };
+
+        let noButton = prompt.querySelector('button.prompt-button-no');
+        noButton.onclick = () => {
+            resolve(false);
+        };
+
+        let closeButton = prompt.querySelector('i.prompt-icon-close');
+        closeButton.onclick = () => {
+            resolve(false);
+        };
+    }).then((result) => {
+        let prompt = document.querySelector('div.prompt-container');
+        prompt.classList.add('hidden');
+
+        return result;
+    });
 }

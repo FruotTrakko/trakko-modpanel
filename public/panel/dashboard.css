@@ -83,6 +83,11 @@
 .widget-new-icon-wrapper {
     margin: .15em auto;
     cursor: pointer;
+    transition-duration: .5s;
+}
+
+.widget-new-icon-wrapper-selected {
+    transform: rotate(45deg);
 }
 
 .widget-new-selection-container {

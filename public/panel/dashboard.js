@@ -18,11 +18,8 @@ class Dashboard {
         this.widgets = [];
 
         let standardWidgets = [
-            ["Test Widget", Widget],
-            ["Cool Widget", Widget],
-            ["Chat Widget", ChatWidget],
-            ["Speacial Thing", Widget],
-            ["Nice Chat", Widget]
+            ["Highlight Configuration", HighlightConfigWidget],
+            ["Chat Widget", ChatWidget]
         ];
 
         this.availableWidgets = new Map(standardWidgets);

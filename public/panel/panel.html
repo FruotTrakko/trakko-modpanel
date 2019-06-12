@@ -49,8 +49,8 @@
     <div class="inner-container">
         <div class="panel"></div>
 
-        <div class="settings-pane" style="width: 25vw">
-            <div class="settings-container">
+        <div class="settings-pane" style="width: 0vw">
+            <div class="settings-container hidden">
                 <div class="settings-option settings-option-evenmode">
                     <p class="heading settings-label">Even Column Spacing:</p>
                     <label class="switch settings-switch">
@@ -59,6 +59,21 @@
                     </label>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="prompt-container hidden">
+        <div class="prompt-handle">
+            <i class="prompt-handle-icon fas fa-exclamation-triangle"></i>
+            <h3 class="heading prompt-title">CONFIRMATION REQUIRED</h3>
+            <i class="prompt-icon-close fas fa-plus fa-lg"></i>
+        </div>
+
+        <div class="prompt-content">
+            <p class="prompt-question">Are you sure?</p>
+
+            <button type="button" class="heading prompt-button prompt-button-yes">YES</button>
+            <button type="button" class="heading prompt-button prompt-button-no">NO</button>
         </div>
     </div>
 

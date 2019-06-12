@@ -11,3 +11,9 @@ function tryUntilTrue(conditionFunction, retryInterval, maxRetries, resolve, rej
 		reject('Exceeded maximum retries limit');
 	}
 }
+
+String.prototype.indexOfRegex = function(regex, fromIndex){
+	var str = fromIndex ? this.substring(fromIndex) : this;
+	var match = str.match(regex);
+	return match ? str.indexOf(match[0]) + (fromIndex ? fromIndex : 0) : -1;
+  }

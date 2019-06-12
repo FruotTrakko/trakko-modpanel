@@ -22,6 +22,7 @@ class NewWidget extends Widget {
         let addIconWrapper = document.createElement('div');
         addIconWrapper.classList.add('widget-new-icon-wrapper', 'widget-new');
         addIconWrapper.onclick = this.onClickNew.bind(this);
+        this.icon = addIconWrapper;
 
         let addIcon = document.createElement('span');
         addIcon.classList.add('widget-icon', 'widget-new', 'fa-stack');
@@ -70,6 +71,7 @@ class NewWidget extends Widget {
 
     toggleSelection() {
         this.selection.classList.toggle('widget-hidden');
+        this.icon.classList.toggle('widget-new-icon-wrapper-selected');
 
         if (!this.selection.classList.contains('widget-hidden')) {
             this.updateSearch();
@@ -306,6 +308,8 @@ class ChatWidget extends Widget {
             this.sendButton.setAttribute('disabled', '');
             this.messageBox.classList.add('widget-chat-overlay-blur');
             this.input.parentNode.classList.add('widget-chat-overlay-blur');
+
+            this.channelInput.focus();
         }
 
         this.addSettings();
@@ -465,6 +469,10 @@ class ChatWidget extends Widget {
 
         this.messageBox.classList.toggle('widget-chat-overlay-blur');
         this.input.parentNode.classList.toggle('widget-chat-overlay-blur');
+
+        if(!this.settingsModal.classList.contains('widget-hidden')) {
+            this.channelInput.focus();
+        }
     }
 
     clearMessages() {
@@ -473,4 +481,12 @@ class ChatWidget extends Widget {
             this.messageBox.firstElementChild.remove();
         }
     }
+}
+
+class HighlightConfigWidget extends Widget {
+
+    constructor(columnElement) {
+        super(columnElement, 'Highlight Configuration');
+    }
+
 }
