@@ -23,10 +23,13 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
     usernameParagraph.classList.add('username');
 
     let messageSeperator = document.createElement('span');
+    let message;
     if (!messageIsAction) {
         messageSeperator.innerText = ': ';
+        message = senderMessage;
     } else {
         messageSeperator.innerText = ' ';
+        message = senderMessage.slice(senderMessage.indexOf(' ') + 1, senderMessage.length - 3)
     }
     messageSeperator.classList.add('message-seperator');
 
@@ -34,15 +37,15 @@ function constructMessageContainer(parentElement, senderName, senderColor, sende
     messageParagraph.classList.add('message-text');
     if (messageIsAction) {
         messageParagraph.style.color = translateColorToReadable(senderColor);
-        messageParagraph.innerText = senderMessage.slice(senderMessage.indexOf(' ') + 1, senderMessage.length - 3);
+        messageParagraph.innerText = message;
     } else {
-        messageParagraph.innerText = senderMessage;
+        messageParagraph.innerText = message;
     }
     //TODO MAKE LEGACY
-    highlightPings(senderMessage, messageParagraph);
+    //highlightPings(senderMessage, messageParagraph);
 
     window.highlightFilter.forEach((value, key) => {
-        highlight(messageParagraph, senderMessage, key, value.color, value.inverse, value.caseSensitive, value.regex);
+        highlight(messageParagraph, message, key, value.color, value.inverse, value.caseSensitive, value.regex);
     });
 
     let deletedParagraph = document.createElement('p');
@@ -145,12 +148,20 @@ function highlightPings(senderMessage, messageParagraph) {
 }
 
 function highlight(messageParagraph, message, highlightText, highlightColor, inverseColors, caseSensitive, isRegex) {
-    console.log(`Searching ${message} for ${highlightText} with params color ${highlightColor}, inverse ${inverseColors}, case sensitvity ${caseSensitive} and regex ${isRegex}`);
-
-    let regex = isRegex ? new RegExp(highlightText, 'g') : new RegExp(`${highlightText}`, `g${caseSensitive ? 'i' : ''}`);
+    console.log(`Searching ${message} for ${highlightText} with params color ${highlightColor}, inverse ${inverseColors} and case sensitvity ${caseSensitive}`);
+    
+    let regex = new RegExp(`${highlightText}`, `g${!caseSensitive ? 'i' : ''}`);
     let occurences = message.match(regex);
     if (occurences === null) {
         return;
+    }
+    
+    console.log(message.match(regex)[0]);
+    let regexString;
+    if (isRegex) {
+        regexString = occurences[0];
+    } else {
+        regexString = highlightText;
     }
 
     let textElements = [];
@@ -160,19 +171,19 @@ function highlight(messageParagraph, message, highlightText, highlightColor, inv
     textElements.push(message.slice(0, message.indexOfRegex(regex)));
 
     let offset = 0;
-    textElements.push(message.slice(message.indexOfRegex(regex), message.indexOfRegex(regex) + highlightText.length));
+    textElements.push(message.slice(message.indexOfRegex(regex), message.indexOfRegex(regex) + regexString.length));
     offset = message.indexOfRegex(regex) + 1;
 
     for (let i = 1; i < occurences.length; i++) {
-        textElements.push(message.slice(message.indexOfRegex(regex, offset - 1) + highlightText.length, message.indexOfRegex(regex, offset)));
-        textElements.push(message.slice(message.indexOfRegex(regex, offset), message.indexOfRegex(regex, offset) + highlightText.length));
+        textElements.push(message.slice(message.indexOfRegex(regex, offset - 1) + regexString.length, message.indexOfRegex(regex, offset)));
+        textElements.push(message.slice(message.indexOfRegex(regex, offset), message.indexOfRegex(regex, offset) + regexString.length));
         offset = message.indexOfRegex(regex, offset) + 1;
     }
 
-    textElements.push(message.slice(message.indexOfRegex(regex, offset - 1) + highlightText.length));
+    textElements.push(message.slice(message.indexOfRegex(regex, offset - 1) + regexString.length));
 
     console.log(textElements);
-    
+
     messageParagraph.innerText = '';
     for (let element of textElements) {
         let paragraph = document.createElement('span');
@@ -185,7 +196,6 @@ function highlight(messageParagraph, message, highlightText, highlightColor, inv
             } else {
                 paragraph.style.backgroundColor = 'whitesmoke';
                 paragraph.style.color = highlightColor;
-                paragraph.style.fontWeight = 'bold';
             }
         }
 
