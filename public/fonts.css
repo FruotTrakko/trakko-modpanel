@@ -65,6 +65,12 @@ input:hover, input:focus{a
     color: rgb(46, 46, 46);
 } */
 
+input[type=color]{
+    height: 2.5em;
+    width: 4.75em;
+    padding: .1em .25em;
+}
+
 .switch {
     position: relative;
     display: inline-block;
@@ -105,9 +111,17 @@ input:hover, input:focus{a
     transition: .4s;
     transition-timing-function: ease-in;
 }
+
+.slider.blocked:before {
+    border: .15em solid rgb(180, 180, 180);
+}
   
 input:checked + .slider {
     background-color: rgba(84, 195, 48, 0.8);
+}
+
+input:checked + .slider.blocked {
+    background-color: rgba(85, 195, 48, 0.5);
 }
   
 input:focus + .slider {
@@ -118,6 +132,16 @@ input:focus + .slider {
 input:checked + .slider:before {
     transform: translateX(2em);
     background-color: whitesmoke;
+}
+
+input:checked + .slider.blocked:before {
+    background-color: rgb(180, 180, 180);
+}
+
+.blocked {
+    cursor: not-allowed;
+    color: rgb(180, 180, 180);
+    border: .15em solid rgb(180, 180, 180);
 }
 
 :focus {

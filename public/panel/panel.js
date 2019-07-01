@@ -459,3 +459,8 @@ function promptCheck(action) {
         return result;
     });
 }
+
+function clearDevStorage() {
+    sessionStorage.removeItem('dev');
+    sessionStorage.removeItem('devConnect');
+}

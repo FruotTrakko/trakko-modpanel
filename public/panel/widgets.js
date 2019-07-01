@@ -87,7 +87,7 @@ class NewWidget extends Widget {
         let searchString = "";
         if (keyEvent) {
             if (keyEvent.keyCode == 13) {
-                this.onSelect({srcElement: this.resultContainer.firstElementChild});
+                this.onSelect({ srcElement: this.resultContainer.firstElementChild });
             }
 
             searchString = keyEvent.srcElement.value.toUpperCase();
@@ -470,7 +470,7 @@ class ChatWidget extends Widget {
         this.messageBox.classList.toggle('widget-chat-overlay-blur');
         this.input.parentNode.classList.toggle('widget-chat-overlay-blur');
 
-        if(!this.settingsModal.classList.contains('widget-hidden')) {
+        if (!this.settingsModal.classList.contains('widget-hidden')) {
             this.channelInput.focus();
         }
     }
@@ -483,10 +483,279 @@ class ChatWidget extends Widget {
     }
 }
 
-class HighlightConfigWidget extends Widget {
+class ConfigurationWidget extends Widget {
+
+    constructor(columnElement, title) {
+        super(columnElement, title);
+
+        for (let widget of window.dashboard.widgets) {
+            if (widget !== this && widget.title === title) {
+                window.dashboard.removeWidget(this);
+                this.widget.remove();
+                showError('Error', 'A configuration widget must only be opened once!');
+            }
+        }
+    }
+
+}
+
+class HighlightConfigWidget extends ConfigurationWidget {
 
     constructor(columnElement) {
         super(columnElement, 'Highlight Configuration');
+
+        this.updateOptions();
+    }
+
+    updateOptions() {
+        this.clearOptions();
+
+        window.highlightFilter.forEach((value, key) => {
+            let optionElement = document.createElement('div');
+            optionElement.classList.add('widget-highlight-option');
+
+            let optionHandle = document.createElement('div');
+            optionHandle.classList.add('widget-highlight-option-handle');
+            optionHandle.onclick = this.toggleOption.bind(this, key, optionElement, value);
+
+            let optionIcon = document.createElement('i');
+            optionIcon.classList.add('widget-highlight-option-icon', 'widget-highlight-option-arrow', 'fas', 'fa-angle-right', 'fa-lg')
+            let optionText = document.createElement('input');
+            optionText.classList.add('heading', 'blocked', 'widget-highlight-option-text', 'widget-highlight-option-text-hideinput');
+            optionText.type = 'text';
+            optionText.value = `${key}`;
+            optionText.disabled = true;
+            optionText.onclick = this.clickOptionTitle.bind(this);
+            let editIcon = document.createElement('i');
+            editIcon.classList.add('widget-highlight-option-icon', 'widget-highlight-option-edit', 'fas', 'fa-pencil-alt');
+            editIcon.onclick = this.editOption.bind(this, key, optionElement, value);
+            let removeIcon = document.createElement('i');
+            removeIcon.classList.add('widget-highlight-option-icon', 'widget-highlight-option-remove', 'fas', 'fa-trash-alt');
+            removeIcon.onclick = this.removeOption.bind(this, key);
+
+            optionHandle.appendChild(optionIcon);
+            optionHandle.appendChild(optionText);
+            optionHandle.appendChild(editIcon);
+            optionHandle.appendChild(removeIcon);
+
+            optionElement.appendChild(optionHandle);
+
+            this.contentElement.appendChild(optionElement);
+        });
+
+        let addElement = document.createElement('div');
+        addElement.classList.add('widget-highlight-add');
+        addElement.onclick = this.addOption.bind(this);
+
+        let addIcon = document.createElement('i');
+        addIcon.classList.add('widget-highlight-add-icon', 'fas', 'fa-plus');
+
+        let addText = document.createElement('p');
+        addText.classList.add('heading', 'widget-highlight-add-text');
+        addText.innerText = 'ADD NEW';
+
+        addElement.appendChild(addIcon);
+        addElement.appendChild(addText);
+
+        this.contentElement.appendChild(addElement);
+    }
+
+    clearOptions() {
+        let options = this.contentElement.childElementCount;
+        for (let j = 0; j < options; j++) {
+            this.contentElement.firstElementChild.remove();
+        }
+    }
+
+    addOption(mouseEvent) {
+        //TODO
+        console.log(mouseEvent);
+    }
+
+    removeOption(option, mouseEvent) {
+        mouseEvent.stopPropagation();
+
+        promptCheck(`Delete option "${option}"`)
+            .then((success) => {
+                if (success) {
+                    window.highlightFilter.delete(option);
+                    this.updateOptions();
+                } else {
+                    showWarning('Abort', `Aborted deletion of option "${option}"!`);
+                }
+            });
+    }
+
+    toggleOption(option, optionElement, optionSettings, mouseEvent) {
+        if (optionElement.classList.contains('expanded')) {
+            this.collapseOption(option, optionElement);
+            optionElement.classList.remove('expanded');
+            optionElement.querySelector('i.widget-highlight-option-arrow').style.transform = '';
+        } else {
+            this.expandOption(option, optionElement, optionSettings);
+            optionElement.classList.add('expanded');
+            optionElement.querySelector('i.widget-highlight-option-arrow').style.transform = 'rotate(90deg)';
+        }
+    }
+
+    expandOption(option, optionElement, optionSettings) {
+        let settingsDiv = document.createElement('div');
+        settingsDiv.classList.add('widget-highlight-option-settings');
+
+        let colorDiv = document.createElement('div');
+        colorDiv.classList.add('widget-highlight-option-setting');
+        let colorLabel = document.createElement('p');
+        colorLabel.classList.add('widget-highlight-option-label');
+        colorLabel.innerText = 'Color:';
+        let colorInput = document.createElement('input');
+        colorInput.classList.add('widget-highlight-option-color', 'blocked');
+        colorInput.type = 'color';
+        colorInput.disabled = true;
+        colorInput.onchange = this.onValueChange.bind(this, option);
+        //TODO MORE OPTIONS
+
+        colorDiv.appendChild(colorLabel);
+        colorDiv.appendChild(colorInput);
+
+        let inverseDiv = document.createElement('div');
+        inverseDiv.classList.add('widget-highlight-option-setting');
+        let inverseLabel = document.createElement('p');
+        inverseLabel.classList.add('widget-highlight-option-label');
+        inverseLabel.innerText = 'Inverse scheme?';
+        let inverseSwitch = document.createElement('label');
+        inverseSwitch.classList.add('switch');
+
+        let inverseSwitchInput = document.createElement('input');
+        inverseSwitchInput.classList.add('widget-highlight-option-inverse');
+        inverseSwitchInput.type = 'checkbox';
+        inverseSwitchInput.disabled = true;
+        inverseSwitchInput.onchange = this.onValueChange.bind(this, option);
+        let inverseSwitchSlider = document.createElement('span');
+        inverseSwitchSlider.classList.add('slider', 'blocked');
+
+        inverseSwitch.appendChild(inverseSwitchInput);
+        inverseSwitch.appendChild(inverseSwitchSlider);
+
+        inverseDiv.appendChild(inverseLabel);
+        inverseDiv.appendChild(inverseSwitch);
+
+        let caseDiv = document.createElement('div');
+        caseDiv.classList.add('widget-highlight-option-setting');
+        let caseLabel = document.createElement('p');
+        caseLabel.classList.add('widget-highlight-option-label');
+        caseLabel.innerText = 'Is case sensitive?';
+        let caseSwitch = document.createElement('label');
+        caseSwitch.classList.add('switch');
+
+        let caseSwitchInput = document.createElement('input');
+        caseSwitchInput.classList.add('widget-highlight-option-case');
+        caseSwitchInput.type = 'checkbox';
+        caseSwitchInput.disabled = true;
+        caseSwitchInput.onchange = this.onValueChange.bind(this, option);
+        let caseSwitchSlider = document.createElement('span');
+        caseSwitchSlider.classList.add('slider', 'blocked');
+
+        caseSwitch.appendChild(caseSwitchInput);
+        caseSwitch.appendChild(caseSwitchSlider);
+
+        caseDiv.appendChild(caseLabel);
+        caseDiv.appendChild(caseSwitch);
+
+        let emptyDiv = document.createElement('div');
+        emptyDiv.classList.add('widget-highlight-option-setting');
+
+        let advancedDiv = document.createElement('div');
+        advancedDiv.classList.add('widget-highlight-option-setting');
+        let advancedLabel = document.createElement('p');
+        advancedLabel.classList.add('heading', 'widget-highlight-option-label');
+        advancedLabel.innerText = 'ADVANCED OPTIONS'
+
+        advancedDiv.appendChild(advancedLabel);
+
+        let spaceDiv = document.createElement('div');
+        spaceDiv.classList.add('widget-highlight-option-setting');
+
+        let regexDiv = document.createElement('div');
+        regexDiv.classList.add('widget-highlight-option-setting');
+        let regexLabel = document.createElement('p');
+        regexLabel.classList.add('widget-highlight-option-label');
+        regexLabel.innerText = 'Is regular expression?';
+        let regexSwitch = document.createElement('label');
+        regexSwitch.classList.add('switch');
+
+        let regexSwitchInput = document.createElement('input');
+        regexSwitchInput.classList.add('widget-highlight-option-regex');
+        regexSwitchInput.type = 'checkbox';
+        regexSwitchInput.disabled = true;
+        regexSwitchInput.onchange = this.onValueChange.bind(this, option);
+        let regexSwitchSlider = document.createElement('span');
+        regexSwitchSlider.classList.add('slider', 'blocked');
+
+        regexSwitch.appendChild(regexSwitchInput);
+        regexSwitch.appendChild(regexSwitchSlider);
+
+        regexDiv.appendChild(regexLabel);
+        regexDiv.appendChild(regexSwitch);
+
+        settingsDiv.appendChild(colorDiv);
+        settingsDiv.appendChild(inverseDiv);
+        settingsDiv.appendChild(caseDiv);
+        settingsDiv.appendChild(emptyDiv);
+        settingsDiv.appendChild(advancedDiv);
+        settingsDiv.appendChild(spaceDiv);
+        settingsDiv.appendChild(regexDiv);
+
+        optionElement.appendChild(settingsDiv);
+
+        console.log(optionSettings);
+
+        let colors = optionSettings.color;
+        colorInput.value = rgbToHex(
+            parseInt(colors.slice(colors.indexOf('(') + 1, colors.indexOf(','))),
+            parseInt(colors.slice(colors.indexOf(',') + 1, colors.indexOf(',', colors.indexOf(',') + 1))),
+            parseInt(colors.slice(colors.indexOf(',', colors.indexOf(',') + 1) + 1, colors.indexOf(')')))
+        );
+        inverseSwitchInput.checked = optionSettings.inverse;
+        caseSwitchInput.checked = optionSettings.caseSensitive;
+        regexSwitchInput.checked = optionSettings.regex;
+    }
+
+    collapseOption(option, optionElement) {
+        optionElement.querySelector('div.widget-highlight-option-settings').remove();
+    }
+
+    editOption(option, optionElement, optionSettings, mouseEvent) {
+        mouseEvent.stopPropagation();
+        //TODO
+
+        if (!optionElement.classList.contains('expanded')) {
+            this.toggleOption(option, optionElement, optionSettings);
+        }
+
+        optionElement.querySelectorAll('.blocked').forEach((element) => {
+            console.log(element);
+            if (element.tagName === 'SPAN') {
+                element.classList.remove('blocked');
+                let target = element.parentElement.querySelector('input');
+                target.disabled = false;
+            } else {
+                if (element.classList.contains('widget-highlight-option-text')) {
+                    element.classList.remove('widget-highlight-option-text-hideinput');
+                }
+                element.classList.remove('blocked');
+                element.disabled = false;
+            }
+        });
+
+        console.log(option, optionElement, mouseEvent);
+    }
+
+    onValueChange(option, changeEvent) {
+        console.log(option, changeEvent);
+    }
+
+    clickOptionTitle(mouseEvent) {
+        mouseEvent.stopPropagation();
     }
 
 }
