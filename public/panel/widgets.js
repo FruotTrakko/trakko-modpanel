@@ -519,7 +519,7 @@ class HighlightConfigWidget extends ConfigurationWidget {
             optionHandle.onclick = this.toggleOption.bind(this, key, optionElement, value);
 
             let optionIcon = document.createElement('i');
-            optionIcon.classList.add('widget-highlight-option-icon', 'widget-highlight-option-arrow', 'fas', 'fa-angle-right', 'fa-lg')
+            optionIcon.classList.add('widget-highlight-option-icon', 'widget-highlight-option-arrow', 'fas', 'fa-angle-right', 'fa-lg');
             let optionText = document.createElement('input');
             optionText.classList.add('heading', 'blocked', 'widget-highlight-option-text', 'widget-highlight-option-text-hideinput');
             optionText.type = 'text';

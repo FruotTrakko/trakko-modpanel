@@ -189,6 +189,7 @@ function highlight(messageParagraph, message, highlightText, highlightColor, inv
         let paragraph = document.createElement('span');
         paragraph.innerText = element;
 
+
         if (element.match(regex) !== null) {
             if (!inverseColors) {
                 paragraph.style.backgroundColor = highlightColor;
@@ -197,6 +198,7 @@ function highlight(messageParagraph, message, highlightText, highlightColor, inv
                 paragraph.style.backgroundColor = 'whitesmoke';
                 paragraph.style.color = highlightColor;
             }
+            paragraph.style.padding = '.25em';
         }
 
         messageParagraph.appendChild(paragraph);
