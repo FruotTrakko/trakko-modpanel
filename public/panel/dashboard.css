@@ -222,6 +222,21 @@
     margin: .25em;
 }
 
+.widget-chat-settings-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.widget-chat-settings-height-input {
+    margin: .25em .5em .25em auto;
+    width: 5em;
+}
+
+.widget-chat-settings-height-description {
+    margin-right: auto;
+}
+
 .widget-highlight-option {
     display: flex;
     background-color: rgb(53, 53, 53);

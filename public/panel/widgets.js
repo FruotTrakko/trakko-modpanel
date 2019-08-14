@@ -272,7 +272,7 @@ class ChatWidget extends Widget {
 
         let settingsHeader = document.createElement('h3');
         settingsHeader.classList.add('heading', 'widget-chat-settings-header');
-        settingsHeader.innerText = 'SETTINGS';
+        settingsHeader.innerText = 'CHANNEL';
         let channelInput = document.createElement('input');
         channelInput.classList.add('widget-chat-settings-channel-input');
         channelInput.type = 'text';
@@ -285,9 +285,31 @@ class ChatWidget extends Widget {
         channelButton.innerText = 'JOIN';
         channelButton.onclick = this.bindNewChannel.bind(this);
 
+        let heightLabel = document.createElement('h3');
+        heightLabel.classList.add('heading', 'widget-chat-settings-header');
+        heightLabel.innerText = 'HEIGHT';
+
+        let heightRow = document.createElement('div');
+        heightRow.classList.add('widget-chat-settings-row');
+
+        let heightInput = document.createElement('input');
+        heightInput.classList.add('widget-chat-settings-height-input');
+        heightInput.type = 'text';
+        heightInput.value = '50';
+        heightInput.placeholder = '50';
+        heightInput.onkeyup = this.checkHeightChange.bind(this);
+        let heightDescription = document.createElement('p');
+        heightDescription.classList.add('widget-chat-settings-height-description');
+        heightDescription.innerText = 'percent';
+
+        heightRow.appendChild(heightInput);
+        heightRow.appendChild(heightDescription);
+
         modalDiv.appendChild(settingsHeader);
         modalDiv.appendChild(channelInput);
         modalDiv.appendChild(channelButton);
+        modalDiv.appendChild(heightLabel);
+        modalDiv.appendChild(heightRow);
 
         buttonDiv.appendChild(messageInput);
         buttonDiv.appendChild(sendButton);
@@ -332,6 +354,14 @@ class ChatWidget extends Widget {
         if (event.keyCode == 13) {
             this.bindNewChannel(null, input);
         }
+    }
+
+    checkHeightChange(event) {
+        let input = event.srcElement;
+        let value;
+        input.value <= 0 ? value = '50vh' : value = `${input.value}vh`;
+
+        this.messageBox.style.height = value;
     }
 
     sendMessage(event) {

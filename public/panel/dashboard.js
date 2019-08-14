@@ -1,12 +1,14 @@
 class Dashboard {
 
-    constructor(parentElement, cols) {
-        let widths = []
-        for (let i = 0; i < cols; i++) {
-            widths[i] = 100 / cols;
+    constructor(parentElement, cols, colWidths) {
+        if(!colWidths) {
+            var widths = []
+            for (let i = 0; i < cols; i++) {
+                widths[i] = 100 / cols;
+            }
         }
 
-        this.createDashboard(parentElement, cols, widths);
+        this.createDashboard(parentElement, cols, colWidths ? colWidths : widths);
     }
 
     createDashboard(parentElement, cols, columnWidths, evenColumns) {
