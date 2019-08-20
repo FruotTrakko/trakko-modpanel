@@ -1,24 +1,35 @@
 class Dashboard {
 
-    constructor(parentElement, cols) {
-        let widths = []
-        for (let i = 0; i < cols; i++) {
-            widths[i] = 100 / cols;
+    constructor(parentElement, cols, colWidths) {
+        if(!colWidths) {
+            var widths = []
+            for (let i = 0; i < cols; i++) {
+                widths[i] = 100 / cols;
+            }
         }
 
-        this.createDashboard(parentElement, cols, widths);
+        this.createDashboard(parentElement, cols, colWidths ? colWidths : widths);
     }
 
-    createDashboard(parentElement, cols, columnWidths) {
+    createDashboard(parentElement, cols, columnWidths, evenColumns) {
         this.parentElement = parentElement;
         this.cols = cols;
+        this.columnWidths = columnWidths;
+        this.evenColumns = evenColumns === null || evenColumns === undefined ? true : evenColumns;
         this.columns = [];
         this.widgets = [];
+
+        let standardWidgets = [
+            ["Highlight Configuration", HighlightConfigWidget],
+            ["Chat Widget", ChatWidget]
+        ];
+
+        this.availableWidgets = new Map(standardWidgets);
 
         this.parentElement.classList.add('dashboard-main');
 
         for (let i = 0; i < columnWidths.length; i++) {
-            this.columns[i] = new Column(this.parentElement, columnWidths[i], this);
+            this.columns[i] = new Column(this.parentElement, this.columnWidths[i], this);
         }
     }
 
@@ -46,8 +57,49 @@ class Dashboard {
         this.widgets.splice(this.widgets.indexOf(widget), 1);
     }
 
+    getAvailableWidgets() {
+        return this.availableWidgets;
+    }
+
+    registerWidgetType(name, classObject) {
+        this.availableWidgets.set(name, classObject);
+    }
+
     updateDashboard() {
-        //TODO IMPLEMENT METHOD
+        if (this.columns.length > this.cols) {
+            for (let i = this.columns.length; i > this.cols; i--) {
+                this.columns[i - 1].column.remove();
+                this.columns.pop();
+            }
+
+        } else if (this.columns.length < this.cols) {
+            for (let i = this.columns.length; i < this.cols; i++) {
+                this.columns[i] = new Column(this.parentElement, this.columnWidths[i], this);
+            }
+
+        }
+
+        if (this.evenColumns) {
+            this.columnWidths = this.getEvenColumnWidths(this.cols);
+        }
+
+        for (let i = 0; i < this.columns.length; i++) {
+            this.columns[i].updateWidth(this.columnWidths[i]);
+        }
+    }
+
+    getEvenColumnWidths(cols) {
+        let widths = []
+        for (let i = 0; i < cols; i++) {
+            widths[i] = 100 / cols;
+        }
+        return widths;
+    }
+
+    setColumnMode(even) {
+        this.evenColumns = even;
+
+        this.updateDashboard();
     }
 
     onMessage(message) {
@@ -72,6 +124,11 @@ class Column {
         this.parentElement.appendChild(columnDiv);
 
         this.newWidget = new NewWidget(this.column, dashboard);
+    }
+
+    updateWidth(width) {
+        this.column.style.width = `${width}%`;
+        this.width = width;
     }
 }
 

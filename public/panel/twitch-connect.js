@@ -4,7 +4,15 @@ function onPageLoad() {
             username: sessionStorage.getItem('authUser'),
             password: `oauth:${sessionStorage.getItem('authToken')}`
         });
-        window.chatClient.open();
+
+        if(sessionStorage.getItem('devConnect') !== 'false') {
+            window.chatClient.open();
+        }
+
+        if (sessionStorage.getItem('dev') !== 'true') {
+            sessionStorage.removeItem('authUser');
+            sessionStorage.removeItem('authToken');
+        }
     } else {
         showWarning('Important', 'You have to login with your twitch account to use our service!');
 

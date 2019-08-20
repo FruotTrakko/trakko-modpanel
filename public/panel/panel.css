@@ -43,10 +43,11 @@
     bottom: 0;
     margin: .15em;
     color: whitesmoke;
+    z-index: 999;
 }
 
 .hidden {
-    display: none !important;
+   display: none !important;
 }
 
 .border {
@@ -109,8 +110,14 @@ div.notifications {
     z-index: 99;
 }
 
+div.inner-container {
+    display: flex;
+}
+
 div.panel {
     display: flex;
+    flex-grow: 1;
+    flex-shrink: 99;
 }
 
 div.side-container {
@@ -162,6 +169,7 @@ span.message-username-ping {
 div.message {
     padding: .5em .5em 0 .5em;
     display: inline;
+    line-height: 1.4;
 }
 
 div.message-self{
@@ -313,4 +321,94 @@ input.channel-name {
 button.channel-join {
     float: right;
     margin: .25em auto;
+}
+
+.settings-pane {
+    margin: .5em 0;
+    height: auto;
+    background-color: rgb(46, 46, 46);
+    box-shadow: 0 0 0 1px rgba(80, 80, 80, 0.5);
+    transition: width .5s ease-in-out;
+}
+
+.settings-container {
+    margin: .25em;
+}
+
+.settings-option {
+    margin: .5em;
+    display: flex;
+}
+
+.settings-label {
+    align-self: center;
+}
+
+.settings-switch {
+    margin: 0 0 0 auto;
+    align-self: center;
+}
+
+.prompt-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(46, 46, 46);
+    color: whitesmoke;
+    box-shadow: 0 0 0 1px rgba(80, 80, 80, 0.5);
+    border-radius: .1em;
+    z-index: 15;
+}
+
+.prompt-handle {
+    display: flex;
+    box-shadow: 0 0 0 1px rgba(80, 80, 80, 0.5);
+    border-radius: .1em;
+    align-items: center;
+    padding: .25em;
+}
+
+.prompt-handle-icon {
+    margin: .3em;
+}
+
+.prompt-title {
+    margin-right: 1.5em;
+}
+
+.prompt-icon-close {
+    transform: rotate(45deg);
+    margin: .3em;
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.5);
+    transition-duration: .5s;
+}
+
+.prompt-icon-close:hover {
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+}
+
+.prompt-content {
+    text-align: center;
+    margin: .5em;
+}
+
+.prompt-question {
+    margin: 1em 0 1.5em 0;
+}
+
+.prompt-button {
+    margin: 0 1em;
+    width: 4em;
+}
+
+.prompt-button-yes {
+    background-color: rgba(255, 123, 123, 0.5);
+    transition-duration: .5s;
+}
+
+.prompt-button-yes:hover {
+    background-color: rgb(240, 94, 94);
 }

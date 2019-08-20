@@ -1,15 +1,13 @@
-document.querySelector('div.notificationbar').classList.add('hidden');
+document.querySelector('div.notificationbar').remove();
 
 
 window.dashboard = new Dashboard(document.querySelector('div.panel'), 2);
 window.statusWidget = new StatusWidget(window.dashboard.getColumn(0).column);
 
 onPageLoad();
+updateSettings();
 
-new Widget(window.dashboard.getColumn(0).column, 'Test Title');
-new Widget(window.dashboard.getColumn(1).column, 'Cool Widget');
-new Widget(window.dashboard.getColumn(1).column, 'Even cooler Widget!');
-new ChatWidget(window.dashboard.getColumn(0).column, '#clym');
-new ChatWidget(window.dashboard.getColumn(1).column);
+new ChatWidget(window.dashboard.getColumn(0).column, '#fruottrakko');
+new HighlightConfigWidget(window.dashboard.getColumn(1).column);
 
-cacheBadges('https://badges.twitch.tv/v1/badges/global/display','global-badges');
+cacheBadges('https://badges.twitch.tv/v1/badges/global/display', 'global-badges');

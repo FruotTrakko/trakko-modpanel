@@ -19,6 +19,7 @@
     <script src="dashboard.js"></script>
     <script src="widgets.js"></script>
     <script src="util.js"></script>
+    <script src="settings.js"></script>
 
     <title>Trakko Modpanel</title>
 </head>
@@ -38,9 +39,6 @@
         <div class="container">
             <h3 class="heading title">WARNING</h3>
             <p class="heading detail">Javascript must be enabled to use this page!</p>
-            <div class="close" onclick="closeNotificationbar()">
-                <p class="close" onclick="closeNotificationbar()">[X]</p>
-            </div>
         </div>
     </div>
 
@@ -48,7 +46,36 @@
         <h3 class="heading">ALPHA MOCKUP VERSION - Not representative of final build!</h3>
     </div>
 
-    <div class="panel"></div>
+    <div class="inner-container">
+        <div class="panel"></div>
+
+        <div class="settings-pane" style="width: 0vw">
+            <div class="settings-container hidden">
+                <div class="settings-option settings-option-evenmode">
+                    <p class="heading settings-label">Even Column Spacing:</p>
+                    <label class="switch settings-switch">
+                        <input type="checkbox" class="setting-evenmode" onclick="onChangeEvenmode()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="prompt-container hidden">
+        <div class="prompt-handle">
+            <i class="prompt-handle-icon fas fa-exclamation-triangle"></i>
+            <h3 class="heading prompt-title">CONFIRMATION REQUIRED</h3>
+            <i class="prompt-icon-close fas fa-plus fa-lg"></i>
+        </div>
+
+        <div class="prompt-content">
+            <p class="prompt-question">Are you sure?</p>
+
+            <button type="button" class="heading prompt-button prompt-button-yes">YES</button>
+            <button type="button" class="heading prompt-button prompt-button-no">NO</button>
+        </div>
+    </div>
 
     <script src="init.js"></script>
 </body>
