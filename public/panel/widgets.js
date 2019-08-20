@@ -295,8 +295,8 @@ class ChatWidget extends Widget {
         let heightInput = document.createElement('input');
         heightInput.classList.add('widget-chat-settings-height-input');
         heightInput.type = 'text';
-        heightInput.value = '50';
-        heightInput.placeholder = '50';
+        heightInput.value = '75';
+        heightInput.placeholder = '75';
         heightInput.onkeyup = this.checkHeightChange.bind(this);
         let heightDescription = document.createElement('p');
         heightDescription.classList.add('widget-chat-settings-height-description');
@@ -359,7 +359,7 @@ class ChatWidget extends Widget {
     checkHeightChange(event) {
         let input = event.srcElement;
         let value;
-        input.value <= 0 ? value = '50vh' : value = `${input.value}vh`;
+        input.value <= 0 ? value = '75vh' : value = `${input.value}vh`;
 
         this.messageBox.style.height = value;
     }
