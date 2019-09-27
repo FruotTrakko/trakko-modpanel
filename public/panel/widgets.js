@@ -337,6 +337,11 @@ class ChatWidget extends Widget {
         this.addSettings();
     }
 
+    onCloseDragElement() {
+        super.onCloseDragElement();
+        this.messageBox.scrollTop = this.messageBox.scrollHeight;
+    }
+
     checkSendKey(event) {
         if (event.keyCode == 13) {
             this.sendMessage();
